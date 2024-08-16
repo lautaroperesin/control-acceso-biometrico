@@ -1,6 +1,7 @@
 ﻿using AnvizDemo;
 using AppRegistros.Utils;
 using System.Data;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
@@ -471,7 +472,7 @@ namespace AppRegistros
                     horasTrabajadasPorDia[fecha] = CalcularHorasTrabajadasPorDia(searchTermWithZeros, fecha);
                 }
 
-                reader = command.ExecuteReader();
+                //reader = command.ExecuteReader();
                 ListViewItem item = new ListViewItem(reader["IdEmpleado"].ToString());
                 item.SubItems.Add(Convert.ToDateTime(reader["Fecha"]).ToString("yyyy-MM-dd HH:mm:ss"));
                 item.SubItems.Add(reader["TipoRegistro"].ToString());

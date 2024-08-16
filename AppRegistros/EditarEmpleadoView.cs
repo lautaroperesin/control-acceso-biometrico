@@ -1,4 +1,5 @@
 ﻿using AppRegistros.Utils;
+using System.Data.SQLite;
 using System.Diagnostics;
 
 namespace AppRegistros
