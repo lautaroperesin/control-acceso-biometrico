@@ -1,17 +1,5 @@
 ﻿using AppRegistros.Utils;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SqlClient;
-using System.Data.SQLite;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace AppRegistros
 {
@@ -38,8 +26,8 @@ namespace AppRegistros
                 if (empleadoReader.Read())
                 {
                     txtNombreEmpleado.Text = (string)empleadoReader["NombreEmpleado"];
-                    txtDpto.Text = (string)empleadoReader["IdDpto"];
-                    txtGrupo.Text = (string)empleadoReader["IdGrupo"];
+                    txtDocumento.Text = (string)empleadoReader["DNI"];
+                    txtAreaTrabajo.Text = (string)empleadoReader["AreaTrabajo"];
                 }
                 else
                 {
@@ -52,22 +40,16 @@ namespace AppRegistros
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             string nombre = txtNombreEmpleado.Text;
-            string dpto = txtDpto.Text;
-            string grupo = txtGrupo.Text;
+            string dni = txtDocumento.Text;
+            string areaTrabajo = txtAreaTrabajo.Text;
 
             cmd.Parameters.Clear();
-            using (cmd.Connection)
-            {
-                string query = $"UPDATE Empleados SET NombreEmpleado = @NombreEmpleado, IdDpto = @IdDpto, IdGrupo = @IdGrupo WHERE IdEmpleado = @id";
-                using (var command = new SQLiteCommand(query, cmd.Connection))
-                {
-                    command.Parameters.AddWithValue("@NombreEmpleado", nombre);
-                    command.Parameters.AddWithValue("@IdDpto", dpto);
-                    command.Parameters.AddWithValue("@IdGrupo", grupo);
-                    command.Parameters.AddWithValue("@id", this.idEmpleadoAEditar);
-                    command.ExecuteNonQuery();
-                }
-            }
+            cmd.CommandText = $"UPDATE Empleados SET NombreEmpleado = @NombreEmpleado, DNI = @dni, AreaTrabajo = @AreaTrabajo WHERE IdEmpleado = @id";
+            cmd.Parameters.AddWithValue("@NombreEmpleado", nombre);
+            cmd.Parameters.AddWithValue("@dni", dni);
+            cmd.Parameters.AddWithValue("@AreaTrabajo", areaTrabajo);
+            cmd.Parameters.AddWithValue("@id", this.idEmpleadoAEditar);
+            cmd.ExecuteNonQuery();
             this.Close();
         }
 

@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             txtNombreEmpleado = new TextBox();
-            txtDpto = new TextBox();
-            txtGrupo = new TextBox();
+            txtDocumento = new TextBox();
+            txtAreaTrabajo = new TextBox();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
@@ -46,21 +46,21 @@
             txtNombreEmpleado.Size = new Size(148, 30);
             txtNombreEmpleado.TabIndex = 0;
             // 
-            // txtDpto
+            // txtDocumento
             // 
-            txtDpto.Font = new Font("Microsoft Sans Serif", 12F);
-            txtDpto.Location = new Point(351, 212);
-            txtDpto.Name = "txtDpto";
-            txtDpto.Size = new Size(148, 30);
-            txtDpto.TabIndex = 1;
+            txtDocumento.Font = new Font("Microsoft Sans Serif", 12F);
+            txtDocumento.Location = new Point(351, 212);
+            txtDocumento.Name = "txtDocumento";
+            txtDocumento.Size = new Size(148, 30);
+            txtDocumento.TabIndex = 1;
             // 
-            // txtGrupo
+            // txtAreaTrabajo
             // 
-            txtGrupo.Font = new Font("Microsoft Sans Serif", 12F);
-            txtGrupo.Location = new Point(351, 286);
-            txtGrupo.Name = "txtGrupo";
-            txtGrupo.Size = new Size(148, 30);
-            txtGrupo.TabIndex = 2;
+            txtAreaTrabajo.Font = new Font("Microsoft Sans Serif", 12F);
+            txtAreaTrabajo.Location = new Point(351, 286);
+            txtAreaTrabajo.Name = "txtAreaTrabajo";
+            txtAreaTrabajo.Size = new Size(148, 30);
+            txtAreaTrabajo.TabIndex = 2;
             // 
             // label1
             // 
@@ -76,21 +76,21 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F);
-            label2.Location = new Point(201, 210);
+            label2.Location = new Point(282, 214);
             label2.Name = "label2";
-            label2.Size = new Size(143, 28);
+            label2.Size = new Size(50, 28);
             label2.TabIndex = 4;
-            label2.Text = "Departamento:";
+            label2.Text = "DNI:";
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F);
-            label3.Location = new Point(260, 286);
+            label3.Location = new Point(181, 286);
             label3.Name = "label3";
-            label3.Size = new Size(72, 28);
+            label3.Size = new Size(151, 28);
             label3.TabIndex = 5;
-            label3.Text = "Grupo:";
+            label3.Text = "Área de trabajo:";
             // 
             // btnGuardar
             // 
@@ -123,8 +123,8 @@
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(txtGrupo);
-            Controls.Add(txtDpto);
+            Controls.Add(txtAreaTrabajo);
+            Controls.Add(txtDocumento);
             Controls.Add(txtNombreEmpleado);
             Name = "EditarEmpleadoView";
             StartPosition = FormStartPosition.CenterParent;
@@ -136,8 +136,8 @@
         #endregion
 
         private TextBox txtNombreEmpleado;
-        private TextBox txtDpto;
-        private TextBox txtGrupo;
+        private TextBox txtDocumento;
+        private TextBox txtAreaTrabajo;
         private Label label1;
         private Label label2;
         private Label label3;

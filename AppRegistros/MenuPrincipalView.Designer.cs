@@ -57,6 +57,7 @@
             columnHeader10 = new ColumnHeader();
             columnHeader11 = new ColumnHeader();
             columnHeader12 = new ColumnHeader();
+            columnHeader1 = new ColumnHeader();
             btnBuscarEmpleado = new Button();
             btnEditar = new Button();
             dataGridEmpleados = new DataGridView();
@@ -79,7 +80,7 @@
             // btnBuscarRegistros
             // 
             btnBuscarRegistros.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnBuscarRegistros.Location = new Point(390, 382);
+            btnBuscarRegistros.Location = new Point(141, 385);
             btnBuscarRegistros.Name = "btnBuscarRegistros";
             btnBuscarRegistros.Size = new Size(178, 29);
             btnBuscarRegistros.TabIndex = 0;
@@ -194,7 +195,7 @@
             // btnObtenerEmpleados
             // 
             btnObtenerEmpleados.Anchor = AnchorStyles.None;
-            btnObtenerEmpleados.Location = new Point(674, 197);
+            btnObtenerEmpleados.Location = new Point(817, 137);
             btnObtenerEmpleados.Name = "btnObtenerEmpleados";
             btnObtenerEmpleados.Size = new Size(230, 38);
             btnObtenerEmpleados.TabIndex = 20;
@@ -215,7 +216,7 @@
             // txtId
             // 
             txtId.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtId.Location = new Point(442, 277);
+            txtId.Location = new Point(193, 280);
             txtId.Name = "txtId";
             txtId.Size = new Size(70, 27);
             txtId.TabIndex = 23;
@@ -223,7 +224,7 @@
             // dateTimeFechaInicio
             // 
             dateTimeFechaInicio.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            dateTimeFechaInicio.Location = new Point(444, 310);
+            dateTimeFechaInicio.Location = new Point(195, 313);
             dateTimeFechaInicio.Name = "dateTimeFechaInicio";
             dateTimeFechaInicio.Size = new Size(122, 27);
             dateTimeFechaInicio.TabIndex = 24;
@@ -231,7 +232,7 @@
             // dateTimeFechaFinal
             // 
             dateTimeFechaFinal.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            dateTimeFechaFinal.Location = new Point(442, 343);
+            dateTimeFechaFinal.Location = new Point(193, 346);
             dateTimeFechaFinal.Name = "dateTimeFechaFinal";
             dateTimeFechaFinal.Size = new Size(124, 27);
             dateTimeFechaFinal.TabIndex = 25;
@@ -240,7 +241,7 @@
             // 
             id.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             id.AutoSize = true;
-            id.Location = new Point(409, 285);
+            id.Location = new Point(160, 288);
             id.Name = "id";
             id.Size = new Size(27, 20);
             id.TabIndex = 26;
@@ -250,7 +251,7 @@
             // 
             label4.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             label4.AutoSize = true;
-            label4.Location = new Point(348, 315);
+            label4.Location = new Point(99, 318);
             label4.Name = "label4";
             label4.Size = new Size(90, 20);
             label4.TabIndex = 27;
@@ -260,7 +261,7 @@
             // 
             label5.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             label5.AutoSize = true;
-            label5.Location = new Point(353, 350);
+            label5.Location = new Point(104, 353);
             label5.Name = "label5";
             label5.Size = new Size(83, 20);
             label5.TabIndex = 28;
@@ -272,9 +273,9 @@
             listViewEmpleados.Columns.AddRange(new ColumnHeader[] { columnHeader5, columnHeader6, columnHeader7, columnHeader8 });
             listViewEmpleados.FullRowSelect = true;
             listViewEmpleados.GridLines = true;
-            listViewEmpleados.Location = new Point(560, 38);
+            listViewEmpleados.Location = new Point(198, 36);
             listViewEmpleados.Name = "listViewEmpleados";
-            listViewEmpleados.Size = new Size(429, 139);
+            listViewEmpleados.Size = new Size(598, 139);
             listViewEmpleados.TabIndex = 29;
             listViewEmpleados.UseCompatibleStateImageBehavior = false;
             listViewEmpleados.View = View.Details;
@@ -282,7 +283,7 @@
             // columnHeader5
             // 
             columnHeader5.Text = "ID";
-            columnHeader5.Width = 150;
+            columnHeader5.Width = 110;
             // 
             // columnHeader6
             // 
@@ -291,22 +292,24 @@
             // 
             // columnHeader7
             // 
-            columnHeader7.Text = "Grupo";
+            columnHeader7.Text = "DNI";
+            columnHeader7.Width = 150;
             // 
             // columnHeader8
             // 
-            columnHeader8.Text = "Dpto. ID";
+            columnHeader8.Text = "Área de trabajo";
+            columnHeader8.Width = 180;
             // 
             // listViewRegistros
             // 
             listViewRegistros.Anchor = AnchorStyles.None;
             listViewRegistros.BorderStyle = BorderStyle.FixedSingle;
-            listViewRegistros.Columns.AddRange(new ColumnHeader[] { columnHeader10, columnHeader11, columnHeader12 });
+            listViewRegistros.Columns.AddRange(new ColumnHeader[] { columnHeader10, columnHeader11, columnHeader12, columnHeader1 });
             listViewRegistros.FullRowSelect = true;
             listViewRegistros.GridLines = true;
-            listViewRegistros.Location = new Point(611, 159);
+            listViewRegistros.Location = new Point(450, 159);
             listViewRegistros.Name = "listViewRegistros";
-            listViewRegistros.Size = new Size(402, 256);
+            listViewRegistros.Size = new Size(505, 256);
             listViewRegistros.TabIndex = 30;
             listViewRegistros.UseCompatibleStateImageBehavior = false;
             listViewRegistros.View = View.Details;
@@ -326,12 +329,17 @@
             columnHeader12.Text = "Tipo de reg.";
             columnHeader12.Width = 100;
             // 
+            // columnHeader1
+            // 
+            columnHeader1.Text = "Horas totales";
+            columnHeader1.Width = 100;
+            // 
             // btnBuscarEmpleado
             // 
             btnBuscarEmpleado.Anchor = AnchorStyles.None;
-            btnBuscarEmpleado.Location = new Point(408, 257);
+            btnBuscarEmpleado.Location = new Point(522, 253);
             btnBuscarEmpleado.Name = "btnBuscarEmpleado";
-            btnBuscarEmpleado.Size = new Size(236, 29);
+            btnBuscarEmpleado.Size = new Size(142, 33);
             btnBuscarEmpleado.TabIndex = 31;
             btnBuscarEmpleado.Text = "Buscar empelado";
             btnBuscarEmpleado.UseVisualStyleBackColor = true;
@@ -420,7 +428,7 @@
             // 
             label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
-            label3.Location = new Point(361, 222);
+            label3.Location = new Point(538, 218);
             label3.Name = "label3";
             label3.Size = new Size(99, 20);
             label3.TabIndex = 36;
@@ -428,7 +436,7 @@
             // 
             // txtIdEmpleado
             // 
-            txtIdEmpleado.Location = new Point(477, 215);
+            txtIdEmpleado.Location = new Point(654, 211);
             txtIdEmpleado.Name = "txtIdEmpleado";
             txtIdEmpleado.Size = new Size(125, 27);
             txtIdEmpleado.TabIndex = 35;
@@ -532,5 +540,6 @@
         private TabPage tabPageConfig;
         private Label label3;
         private TextBox txtIdEmpleado;
+        private ColumnHeader columnHeader1;
     }
 }

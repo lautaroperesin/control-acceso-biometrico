@@ -1,15 +1,11 @@
 ﻿using AnvizDemo;
 using AppRegistros.Utils;
 using System.Data;
-using System.Data.SqlClient;
-using System.Data.SQLite;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using static AnvizDemo.AnvizNew;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace AppRegistros
 {
@@ -42,8 +38,8 @@ namespace AppRegistros
             CREATE TABLE IF NOT EXISTS Empleados (
                 IdEmpleado TEXT PRIMARY KEY,
                 NombreEmpleado TEXT,
-                IdGrupo TEXT,
-                IdDpto TEXT
+                DNI TEXT,
+                AreaTrabajo TEXT
             );";
             command.ExecuteNonQuery();
         }
@@ -55,11 +51,12 @@ namespace AppRegistros
                 IdEmpleado TEXT,
                 Fecha TEXT,
                 TipoRegistro TEXT,
+                TotalHoras TEXT,
                 FOREIGN KEY(IdEmpleado) REFERENCES Empleados(IdEmpleado)
             );";
             command.ExecuteNonQuery();
         }
-        public void InsertarEmpleado(string idEmpleado, string nombreEmpleado, string grupoId, string dptoId)   
+        public void InsertarEmpleado(string idEmpleado, string nombreEmpleado, string dni, string areaTrabajo)
         {
             command.CommandText = "SELECT COUNT(*) FROM Empleados WHERE IdEmpleado = @IdEmpleado";
             command.Parameters.AddWithValue("@IdEmpleado", idEmpleado);
@@ -70,12 +67,12 @@ namespace AppRegistros
             if (count == 0)
             {
                 command.CommandText = @"
-                INSERT INTO Empleados (IdEmpleado, NombreEmpleado, IdGrupo, IdDpto) 
-                VALUES (@IdEmpleado, @NombreEmpleado, @IdGrupo, @IdDpto)";
+                INSERT INTO Empleados (IdEmpleado, NombreEmpleado, DNI, AreaTrabajo) 
+                VALUES (@IdEmpleado, @NombreEmpleado, @dni, @AreaTrabajo)";
                 command.Parameters.AddWithValue("@IdEmpleado", idEmpleado);
                 command.Parameters.AddWithValue("@NombreEmpleado", nombreEmpleado);
-                command.Parameters.AddWithValue("@IdGrupo", grupoId);
-                command.Parameters.AddWithValue("@IdDpto", dptoId);
+                command.Parameters.AddWithValue("@dni", dni);
+                command.Parameters.AddWithValue("@AreaTrabajo", areaTrabajo);
                 command.ExecuteNonQuery();
             }
         }
@@ -285,8 +282,8 @@ namespace AppRegistros
                 {
                     ListViewItem item = new ListViewItem(reader["IdEmpleado"].ToString());
                     item.SubItems.Add(reader["NombreEmpleado"].ToString());
-                    item.SubItems.Add(reader["IdGrupo"].ToString());
-                    item.SubItems.Add(reader["IdDpto"].ToString());
+                    item.SubItems.Add(reader["DNI"].ToString());
+                    item.SubItems.Add(reader["AreaTrabajo"].ToString());
 
                     listViewEmpleados.Items.Add(item);
                 }
@@ -319,12 +316,12 @@ namespace AppRegistros
 
                         string idEmpleado = Employee_array_to_srring(infoEmpleado.EmployeeId);
                         string nombreEmpleado = byte_to_string(infoEmpleado.EmployeeName).TrimEnd('\0');
-                        string grupoId = infoEmpleado.GroupId.ToString();
-                        string dptoId = infoEmpleado.DepartmentId.ToString();
+                        string dni = string.Empty;
+                        string areaTrabajo = string.Empty;
 
                         dbg_info($"Empleado - ID: {idEmpleado}, Nombre: {nombreEmpleado}");
 
-                        InsertarEmpleado(idEmpleado, nombreEmpleado, grupoId, dptoId);
+                        InsertarEmpleado(idEmpleado, nombreEmpleado, dni, areaTrabajo);
 
                         ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
                     }
@@ -352,8 +349,8 @@ namespace AppRegistros
                 {
                     ListViewItem item = new ListViewItem(reader["IdEmpleado"].ToString());
                     item.SubItems.Add(reader["NombreEmpleado"].ToString());
-                    item.SubItems.Add(reader["IdGrupo"].ToString());
-                    item.SubItems.Add(reader["IdDpto"].ToString());
+                    item.SubItems.Add(reader["DNI"].ToString());
+                    item.SubItems.Add(reader["AreaTrabajo"].ToString());
 
                     listViewEmpleados.Items.Add(item);
                 }
@@ -450,23 +447,39 @@ namespace AppRegistros
             DateTime fechaInicio = dateTimeFechaInicio.Value.Date;
             DateTime fechaFin = dateTimeFechaFinal.Value.Date;
 
-            command.CommandText = "SELECT * FROM Registros WHERE IdEmpleado = @idEmpleado OR IdEmpleado = @searchTermWithZeros AND Fecha BETWEEN @fechaInicio AND @fechaFin";
+            command.CommandText = @"
+                SELECT IdEmpleado, Fecha, TipoRegistro, TotalHoras 
+                FROM Registros 
+                WHERE (IdEmpleado = @idEmpleado OR IdEmpleado = @searchTermWithZeros) 
+                AND Fecha BETWEEN @fechaInicio AND @fechaFin 
+                ORDER BY Fecha";
             command.Parameters.AddWithValue("@idEmpleado", idEmpleado);
             command.Parameters.AddWithValue("@searchTermWithZeros", searchTermWithZeros);
             command.Parameters.AddWithValue("@fechaInicio", fechaInicio);
             command.Parameters.AddWithValue("@fechaFin", fechaFin);
 
-            using (SQLiteDataReader reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    ListViewItem item = new ListViewItem(reader["IdEmpleado"].ToString());
-                    item.SubItems.Add(Convert.ToDateTime(reader["Fecha"]).ToString("yyyy-MM-dd HH:mm:ss"));
-                    item.SubItems.Add(reader["TipoRegistro"].ToString());
+            Dictionary<string, double> horasTrabajadasPorDia = new Dictionary<string, double>();
 
-                    listViewRegistros.Items.Add(item);
+
+            SQLiteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                string fecha = Convert.ToDateTime(reader["Fecha"]).ToString("yyyy-MM-dd");
+                if (!horasTrabajadasPorDia.ContainsKey(fecha))
+                {
+                    reader.Close();
+                    horasTrabajadasPorDia[fecha] = CalcularHorasTrabajadasPorDia(searchTermWithZeros, fecha);
                 }
+
+                reader = command.ExecuteReader();
+                ListViewItem item = new ListViewItem(reader["IdEmpleado"].ToString());
+                item.SubItems.Add(Convert.ToDateTime(reader["Fecha"]).ToString("yyyy-MM-dd HH:mm:ss"));
+                item.SubItems.Add(reader["TipoRegistro"].ToString());
+                item.SubItems.Add(horasTrabajadasPorDia[fecha].ToString("F2"));
+
+                listViewRegistros.Items.Add(item);
             }
+            reader.Close();
         }
 
 
@@ -548,7 +561,19 @@ namespace AppRegistros
         {
             try
             {
-                byte[] employeeIdBytes = Encoding.ASCII.GetBytes(idEmpleado.Substring(0, 5));
+                dbg_info($"idEmpleado: {idEmpleado}");
+                if (string.IsNullOrEmpty(idEmpleado) || idEmpleado.Length != 10)
+                {
+                    dbg_info("Error: El ID del empleado es nulo o no tiene exactamente 10 caracteres.");
+                    return false;
+                }
+                // Toma los últimos 5 caracteres del ID
+                string idEmpleadoCorto = idEmpleado.Substring(idEmpleado.Length - 5);
+                dbg_info($"idEmpleadoCorto: {idEmpleadoCorto}");
+
+                // Convierte esos 5 caracteres a un array de 5 bytes
+                byte[] employeeIdBytes = Encoding.ASCII.GetBytes(idEmpleadoCorto);
+
 
                 CCHEX_DEL_PERSON_INFO_STRU deleteConfig = new CCHEX_DEL_PERSON_INFO_STRU
                 {
@@ -618,6 +643,119 @@ namespace AppRegistros
         private string Employee_array_to_srring(byte[] EmployeeId)
         {
             return BitConverter.ToString(EmployeeId).Replace("-", "");
+        }
+
+        public void CalcularHorasTotalesPorEmpleado()
+        {
+            command.CommandText = @"
+                SELECT IdEmpleado, Fecha, TipoRegistro 
+                FROM Registros 
+                ORDER BY IdEmpleado, Fecha";
+
+            string idEmpleadoActual = null;
+            DateTime? entrada = null;
+            double totalHoras = 0;
+
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                string idEmpleado = (string)reader["IdEmpleado"];
+                string fechaStr = (string)reader["Fecha"];
+                DateTime fecha = DateTime.ParseExact(fechaStr, "yyyy-MM-dd HH:mm:ss", null);
+                string tipoRegistro = (string)reader["TipoRegistro"];
+
+                if (idEmpleado != idEmpleadoActual)
+                {
+                    if (idEmpleadoActual != null && entrada.HasValue)
+                    {
+                        // Si había una jornada anterior, calcular la diferencia
+                        totalHoras += (fecha - entrada.Value).TotalHours;
+                        reader.Close();
+                        ActualizarHorasTotales(idEmpleadoActual, totalHoras);
+                        reader = command.ExecuteReader();
+                    }
+
+                    // Reset para el nuevo empleado
+                    idEmpleadoActual = idEmpleado;
+                    entrada = null;
+                    totalHoras = 0;
+                }
+
+                if (tipoRegistro == "0")
+                {
+                    entrada = fecha;
+                }
+                else if (tipoRegistro == "1" && entrada.HasValue)
+                {
+                    totalHoras += (fecha - entrada.Value).TotalHours;
+                    entrada = null; // Reset entrada después de cada salida
+                }
+            }
+
+            // Actualizar la última jornada si quedó pendiente
+            if (idEmpleadoActual != null && entrada.HasValue)
+            {
+                totalHoras += (DateTime.Now - entrada.Value).TotalHours;
+                reader.Close();
+                ActualizarHorasTotales(idEmpleadoActual, totalHoras);
+            }
+            reader.Close();
+        }
+
+        private void ActualizarHorasTotales(string idEmpleado, double totalHoras)
+        {
+            command.CommandText = @"
+                UPDATE Registros 
+                SET TotalHoras = @TotalHoras 
+                WHERE IdEmpleado = @IdEmpleado";
+            command.Parameters.Clear();
+            command.Parameters.AddWithValue("@TotalHoras", totalHoras);
+            command.Parameters.AddWithValue("@IdEmpleado", idEmpleado);
+            command.ExecuteNonQuery();
+        }
+
+        public double CalcularHorasTrabajadasPorDia(string idEmpleado, string fecha)
+        {
+            command.CommandText = @"
+                SELECT 
+                MIN(Fecha) AS Entrada, 
+                MAX(Fecha) AS Salida
+                FROM Registros 
+                WHERE IdEmpleado = @IdEmpleado AND Fecha LIKE @Fecha || '%' AND (tiporegistro = '0' OR tiporegistro = '1')";
+
+            command.Parameters.AddWithValue("@IdEmpleado", idEmpleado);
+            command.Parameters.AddWithValue("@Fecha", fecha);
+
+            using (var reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    var entrada = reader["Entrada"].ToString();
+                    var salida = reader["Salida"].ToString();
+
+                    if (!string.IsNullOrEmpty(entrada) && !string.IsNullOrEmpty(salida))
+                    {
+                        DateTime entradaDT = DateTime.Parse(entrada);
+                        DateTime salidaDT = DateTime.Parse(salida);
+                        TimeSpan horasTrabajadas = salidaDT - entradaDT;
+                        return horasTrabajadas.TotalHours;
+                    }
+                }
+            }
+            return 0;
+        }
+
+        public double CalcularHorasTotalesEnRango(string idEmpleado, DateTime fechaInicio, DateTime fechaFin)
+        {
+            double totalHoras = 0;
+
+            for (var fecha = fechaInicio; fecha <= fechaFin; fecha = fecha.AddDays(1))
+            {
+                string fechaStr = fecha.ToString("yyyy-MM-dd");
+                totalHoras += CalcularHorasTrabajadasPorDia(idEmpleado, fechaStr);
+            }
+
+            return totalHoras;
         }
     }
 }
