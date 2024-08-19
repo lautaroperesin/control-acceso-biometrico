@@ -272,10 +272,11 @@ namespace AppRegistros
             string idEmpleado = txtIdEmpleado.Text;
             string searchTermWithZeros = idEmpleado.PadLeft(10, '0');
 
-            command.CommandText = "SELECT * FROM Empleados WHERE IdEmpleado = @idEmpleado OR IdEmpleado = @searchTermWithZeros OR NombreEmpleado LIKE @nombre";
+            command.CommandText = "SELECT * FROM Empleados WHERE IdEmpleado = @idEmpleado OR IdEmpleado = @searchTermWithZeros OR NombreEmpleado LIKE @nombre OR DNI = @dni";
             command.Parameters.AddWithValue("@idEmpleado", idEmpleado);
             command.Parameters.AddWithValue("@searchTermWithZeros", searchTermWithZeros);
             command.Parameters.AddWithValue("@nombre", "%" + idEmpleado + "%");
+            command.Parameters.AddWithValue("@dni", idEmpleado);
 
             using (SQLiteDataReader reader = command.ExecuteReader())
             {
@@ -436,6 +437,7 @@ namespace AppRegistros
 
         private void btnBuscarRegistros_Click(object sender, EventArgs e)
         {
+            ObtenerHorasTrabajadasPorDia();
             CargarListViewRegistros();
         }
         private void CargarListViewRegistros()
@@ -449,34 +451,35 @@ namespace AppRegistros
             DateTime fechaFin = dateTimeFechaFinal.Value.Date;
 
             command.CommandText = @"
-                SELECT IdEmpleado, Fecha, TipoRegistro, TotalHoras 
-                FROM Registros 
-                WHERE (IdEmpleado = @idEmpleado OR IdEmpleado = @searchTermWithZeros) 
-                AND Fecha BETWEEN @fechaInicio AND @fechaFin 
-                ORDER BY Fecha";
+                SELECT r.IdEmpleado, e.NombreEmpleado, e.AreaTrabajo, 
+                       DATE(r.Fecha) AS Dia, 
+                       MIN(r.Fecha) AS Entrada, 
+                       MAX(r.Fecha) AS Salida,
+                       (strftime('%s', MAX(r.Fecha)) - strftime('%s', MIN(r.Fecha))) / 3600.0 AS HorasTrabajadas
+                FROM Registros r
+                JOIN Empleados e ON r.IdEmpleado = e.IdEmpleado
+                WHERE (r.IdEmpleado = @idEmpleado OR r.IdEmpleado = @searchTermWithZeros OR e.NombreEmpleado LIKE @nombre)
+                AND r.Fecha BETWEEN @fechaInicio AND @fechaFin 
+                AND r.TipoRegistro IN (0, 1)
+                GROUP BY r.IdEmpleado, DATE(r.Fecha)
+                HAVING COUNT(*) >= 2
+                ORDER BY Dia";
             command.Parameters.AddWithValue("@idEmpleado", idEmpleado);
             command.Parameters.AddWithValue("@searchTermWithZeros", searchTermWithZeros);
+            command.Parameters.AddWithValue("@nombre", "%" + idEmpleado + "%");
             command.Parameters.AddWithValue("@fechaInicio", fechaInicio);
             command.Parameters.AddWithValue("@fechaFin", fechaFin);
-
-            Dictionary<string, double> horasTrabajadasPorDia = new Dictionary<string, double>();
-
 
             SQLiteDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                string fecha = Convert.ToDateTime(reader["Fecha"]).ToString("yyyy-MM-dd");
-                if (!horasTrabajadasPorDia.ContainsKey(fecha))
-                {
-                    reader.Close();
-                    horasTrabajadasPorDia[fecha] = CalcularHorasTrabajadasPorDia(searchTermWithZeros, fecha);
-                }
-
-                //reader = command.ExecuteReader();
                 ListViewItem item = new ListViewItem(reader["IdEmpleado"].ToString());
-                item.SubItems.Add(Convert.ToDateTime(reader["Fecha"]).ToString("yyyy-MM-dd HH:mm:ss"));
-                item.SubItems.Add(reader["TipoRegistro"].ToString());
-                item.SubItems.Add(horasTrabajadasPorDia[fecha].ToString("F2"));
+                item.SubItems.Add(reader["NombreEmpleado"].ToString());
+                item.SubItems.Add(reader["AreaTrabajo"].ToString());
+                item.SubItems.Add(Convert.ToDateTime(reader["Dia"]).ToString("yyyy-MM-dd"));
+                item.SubItems.Add(Convert.ToDateTime(reader["Entrada"]).ToString("HH:mm:ss"));
+                item.SubItems.Add(Convert.ToDateTime(reader["Salida"]).ToString("HH:mm:ss"));
+                item.SubItems.Add(Convert.ToDouble(reader["HorasTrabajadas"]).ToString("F2"));
 
                 listViewRegistros.Items.Add(item);
             }
@@ -505,15 +508,10 @@ namespace AppRegistros
         {
             if (listViewEmpleados.SelectedItems.Count > 0)
             {
-                // Editar en ListView
                 ListViewItem itemSeleccionado = listViewEmpleados.SelectedItems[0];
                 string idEmpleadoAEditarStr = itemSeleccionado.SubItems[0].Text;
 
-                // Editar en DataGridView
-                //int idEmpleadoAEditar = Convert.ToInt32(dataGridEmpleados.CurrentRow.Cells[0].Value);
-                //string idEmpleadoAEditarStr = (string)dataGridEmpleados.CurrentRow.Cells[0].Value;
-
-                EditarEmpleadoView editarEmpleadoView = new EditarEmpleadoView(idEmpleadoAEditarStr);
+                EditarEmpleadoView editarEmpleadoView = new EditarEmpleadoView(dev_idx[0], anviz_handle, Type[0], idEmpleadoAEditarStr);
                 editarEmpleadoView.ShowDialog();
                 CargarListViewEmpleados();
             }
@@ -742,6 +740,7 @@ namespace AppRegistros
                         return horasTrabajadas.TotalHours;
                     }
                 }
+                reader.Close();
             }
             return 0;
         }
@@ -757,6 +756,42 @@ namespace AppRegistros
             }
 
             return totalHoras;
+        }
+
+        private void ObtenerHorasTrabajadasPorDia()
+        {
+            command.CommandText = @"
+            SELECT 
+                IdEmpleado,
+                DATE(fecha) AS fecha,
+                MIN(fecha) AS horaEntrada,
+                MAX(fecha) AS horaSalida,
+                (strftime('%s', MAX(fecha)) - strftime('%s', MIN(fecha))) / 3600.0 AS horasTrabajadas
+            FROM 
+                Registros
+            WHERE 
+                tiporegistro IN (0, 1)
+            GROUP BY 
+                idempleado,
+                DATE(fecha)
+            HAVING 
+                COUNT(*) >= 2
+            ORDER BY 
+                idempleado, fecha;";
+
+            using (SQLiteDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    string idEmpleado = reader["IdEmpleado"].ToString();
+                    string fecha = reader["Fecha"].ToString();
+                    string horaEntrada = reader["horaEntrada"].ToString();
+                    string horaSalida = reader["horaSalida"].ToString();
+                    double horasTrabajadas = Convert.ToDouble(reader["horasTrabajadas"]);
+
+                    dbg_info($"Empleado: {idEmpleado}, Fecha: {fecha}, Horas Trabajadas: {horasTrabajadas}");
+                }
+            }
         }
     }
 }
