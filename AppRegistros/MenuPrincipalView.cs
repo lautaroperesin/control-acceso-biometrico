@@ -33,6 +33,7 @@ namespace AppRegistros
             CrearTablaRegistros();
         }
 
+        // BASE DE DATOS
         public void CrearTablaEmpleados()
         {
             command.CommandText = @"
@@ -52,7 +53,6 @@ namespace AppRegistros
                 IdEmpleado TEXT,
                 Fecha TEXT,
                 TipoRegistro TEXT,
-                TotalHoras TEXT,
                 FOREIGN KEY(IdEmpleado) REFERENCES Empleados(IdEmpleado)
             );";
             command.ExecuteNonQuery();
@@ -102,6 +102,7 @@ namespace AppRegistros
         }
 
 
+        // DISPOSITIVO
         public void btnConectarDispositivo_Click(object sender, EventArgs e)
         {
             try
@@ -138,7 +139,7 @@ namespace AppRegistros
                         groupBoxInicio.Hide();
                         LoguearDispositivo();
                         ObtenerInfoEmpleado();
-                        CargarDatosAGrilla();
+                        CargarListViewEmpleados();
                     }
                     else
                     {
@@ -172,6 +173,7 @@ namespace AppRegistros
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        // leer los registros del dispositivo
         public void LoguearDispositivo()
         {
             try
@@ -260,10 +262,7 @@ namespace AppRegistros
         }
 
 
-        private void btnObtenerEmpleados_Click(object sender, EventArgs e)
-        {
-            CargarListViewEmpleados();
-        }
+        // EMPLEADOS
         private void btnBuscarEmpleadoPorId_Click(object sender, EventArgs e)
         {
             listViewEmpleados.Items.Clear();
@@ -291,7 +290,6 @@ namespace AppRegistros
                 }
             }
         }
-
         private void ObtenerInfoEmpleado()
         {
             ret = AnvizNew.CChex_ListPersonInfo(anviz_handle, dev_idx[0]);
@@ -360,6 +358,7 @@ namespace AppRegistros
         }
 
 
+        // CONFIGURACION
         private void btnConfigRed_Click(object sender, EventArgs e)
         {
             ret = AnvizNew.CChex_GetNetConfig(anviz_handle, dev_idx[0]);
@@ -433,8 +432,24 @@ namespace AppRegistros
                 }
             }
         }
+        private void btnSincHora_Click(object sender, EventArgs e)
+        {
+            // Obtener la hora actual
+            DateTime now = DateTime.Now;
+
+            ret = AnvizNew.CChex_SetTime(anviz_handle, dev_idx[0], now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
+            if (ret == 1)
+            {
+                MessageBox.Show("Hora sincronizada correctamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Error al sincronizar la hora", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
 
+        // REGISTROS
         private void btnBuscarRegistros_Click(object sender, EventArgs e)
         {
             ObtenerHorasTrabajadasPorDia();
@@ -449,6 +464,7 @@ namespace AppRegistros
             string searchTermWithZeros = idEmpleado.PadLeft(10, '0');
             DateTime fechaInicio = dateTimeFechaInicio.Value.Date;
             DateTime fechaFin = dateTimeFechaFinal.Value.Date;
+            double totalHorasTrabajadas = 0.0;
 
             command.CommandText = @"
                 SELECT r.IdEmpleado, e.NombreEmpleado, e.AreaTrabajo, 
@@ -479,31 +495,19 @@ namespace AppRegistros
                 item.SubItems.Add(Convert.ToDateTime(reader["Dia"]).ToString("yyyy-MM-dd"));
                 item.SubItems.Add(Convert.ToDateTime(reader["Entrada"]).ToString("HH:mm:ss"));
                 item.SubItems.Add(Convert.ToDateTime(reader["Salida"]).ToString("HH:mm:ss"));
+                double horasTrabajadas = Convert.ToDouble(reader["HorasTrabajadas"]);
                 item.SubItems.Add(Convert.ToDouble(reader["HorasTrabajadas"]).ToString("F2"));
 
+                totalHorasTrabajadas += horasTrabajadas;
                 listViewRegistros.Items.Add(item);
             }
             reader.Close();
+            txtHorasTotales.Text = totalHorasTrabajadas.ToString("F2");
         }
 
 
-        private void btnSincHora_Click(object sender, EventArgs e)
-        {
-            // Obtener la hora actual
-            DateTime now = DateTime.Now;
 
-            ret = AnvizNew.CChex_SetTime(anviz_handle, dev_idx[0], now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
-            if (ret == 1)
-            {
-                MessageBox.Show("Hora sincronizada correctamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("Error al sincronizar la hora", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-
+        // EDITAR Y ELIMINAR EMPLEADOS
         private void btnEditar_Click(object sender, EventArgs e)
         {
             if (listViewEmpleados.SelectedItems.Count > 0)
@@ -536,19 +540,36 @@ namespace AppRegistros
 
                 if (respuesta == DialogResult.Yes)
                 {
-                    bool eliminadoDelDispositivo = EliminarEmpleadoDelDispositivo(idEmpleadoAEliminar);
-                    if (eliminadoDelDispositivo)
+                    if ((DevTypeFlag[dev_idx[0]] & 0xff) == (int)AnvizNew.CustomType.DEV_TYPE_VER_4_NEWID)
                     {
-                        command.CommandText = $"DELETE FROM Empleados WHERE IdEmpleado = @id";
-                        command.Parameters.AddWithValue("@id", idEmpleadoAEliminar);
-                        command.ExecuteNonQuery();
-                        CargarListViewEmpleados();
-                        MessageBox.Show("El empleado ha sido eliminado correctamente del dispositivo y de la base de datos.");
+                        AnvizNew.CCHEX_DEL_EMPLOYEE_INFO_STRU_EXT_INF_ID_VER_4_NEWID delete_item;
+                        delete_item.EmployeeId = string_to_my_unicodebyte(28, idEmpleadoAEliminar);
+                        delete_item.operation = 0xFF;
+                        ret = AnvizNew.CChex_DeletePersonInfo_VER_4_NEWID(anviz_handle, dev_idx[0], ref delete_item);
+                        EliminarEmpleadoDelDispositivo(idEmpleadoAEliminar);
                     }
                     else
                     {
-                        MessageBox.Show("Error al eliminar el empleado del dispositivo. No se realizó la eliminación en la base de datos.");
+                        AnvizNew.CCHEX_DEL_PERSON_INFO_STRU delete_item;
+                        delete_item.EmployeeId = new byte[5];
+                        string_to_byte(idEmpleadoAEliminar, delete_item.EmployeeId, 5);
+                        delete_item.operation = 0xFF;
+                        ret = AnvizNew.CChex_DeletePersonInfo(anviz_handle, dev_idx[0], ref delete_item);
+                        EliminarEmpleadoDelDispositivo(idEmpleadoAEliminar);
                     }
+                    //EliminarEmpleadoDelDispositivo(idEmpleadoAEliminar);
+                    //        if (eliminadoDelDispositivo)
+                    //        {
+                    //            command.CommandText = $"DELETE FROM Empleados WHERE IdEmpleado = @id";
+                    //            command.Parameters.AddWithValue("@id", idEmpleadoAEliminar);
+                    //            command.ExecuteNonQuery();
+                    //            CargarListViewEmpleados();
+                    //            MessageBox.Show("El empleado ha sido eliminado correctamente del dispositivo y de la base de datos.");
+                    //        }
+                    //        else
+                    //        {
+                    //            MessageBox.Show("Error al eliminar el empleado del dispositivo. No se realizó la eliminación en la base de datos.");
+                    //        }
                 }
             }
             else
@@ -560,32 +581,32 @@ namespace AppRegistros
         {
             try
             {
-                dbg_info($"idEmpleado: {idEmpleado}");
-                if (string.IsNullOrEmpty(idEmpleado) || idEmpleado.Length != 10)
-                {
-                    dbg_info("Error: El ID del empleado es nulo o no tiene exactamente 10 caracteres.");
-                    return false;
-                }
-                // Toma los últimos 5 caracteres del ID
-                string idEmpleadoCorto = idEmpleado.Substring(idEmpleado.Length - 5);
-                dbg_info($"idEmpleadoCorto: {idEmpleadoCorto}");
+                //dbg_info($"idEmpleado: {idEmpleado}");
+                //if (string.IsNullOrEmpty(idEmpleado) || idEmpleado.Length != 10)
+                //{
+                //    dbg_info("Error: El ID del empleado es nulo o no tiene exactamente 10 caracteres.");
+                //    return false;
+                //}
+                //// Toma los últimos 5 caracteres del ID
+                //string idEmpleadoCorto = idEmpleado.Substring(idEmpleado.Length - 5);
+                //dbg_info($"idEmpleadoCorto: {idEmpleadoCorto}");
 
-                // Convierte esos 5 caracteres a un array de 5 bytes
-                byte[] employeeIdBytes = Encoding.ASCII.GetBytes(idEmpleadoCorto);
+                //// Convierte esos 5 caracteres a un array de 5 bytes
+                //byte[] employeeIdBytes = Encoding.ASCII.GetBytes(idEmpleadoCorto);
 
 
-                CCHEX_DEL_PERSON_INFO_STRU deleteConfig = new CCHEX_DEL_PERSON_INFO_STRU
-                {
-                    EmployeeId = employeeIdBytes,
-                    operation = 0xFF
-                };
+                //CCHEX_DEL_PERSON_INFO_STRU deleteConfig = new CCHEX_DEL_PERSON_INFO_STRU
+                //{
+                //    EmployeeId = employeeIdBytes,
+                //    operation = 0xFF
+                //};
 
-                ret = CChex_DeletePersonInfo(anviz_handle, dev_idx[0], ref deleteConfig);
+                //ret = CChex_DeletePersonInfo(anviz_handle, dev_idx[0], ref deleteConfig);
 
                 pBuff = IntPtr.Zero;
                 try
                 {
-                    len = Marshal.SizeOf(typeof(CCHEX_DEL_PERSON_INFO_STRU)) + 50;
+                    len = Marshal.SizeOf(typeof(CCHEX_DEL_PERSON_INFO_STRU)) + 10;
                     pBuff = Marshal.AllocHGlobal(len);
 
                     if (anviz_handle != IntPtr.Zero)
@@ -597,6 +618,49 @@ namespace AppRegistros
                         {
                             ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
                             dbg_info("CChex_Update returned: " + ret);
+                        }
+
+                        if(ret > 0)
+                        {
+                            if ((DevTypeFlag[dev_idx[0]] & 0xff) == (int)AnvizNew.CustomType.DEV_TYPE_VER_4_NEWID)
+                            {
+                                AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU_VER_4_NEWID result;
+                                result = (AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU_VER_4_NEWID)Marshal.PtrToStructure(pBuff, typeof(AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU_VER_4_NEWID));
+                                if (result.Result == 0)
+                                {
+                                    MessageBox.Show("Delete person OK  ID == " + byte_to_unicode_string(result.EmployeeId));
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Delete person Fail!");
+                                }
+                            }
+                            else
+                            {
+                                AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU result;
+                                result = (AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU)Marshal.PtrToStructure(pBuff, typeof(AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU));
+                                if (result.Result == 0)
+                                {
+                                    byte[] temp = new byte[8];
+                                    int i;
+                                    for (i = 0; i < 5; i++)
+                                    {
+                                        temp[8 - 4 - i] = result.EmployeeId[i];
+                                    }
+                                    dbg_info(BitConverter.ToInt64(temp, 0).ToString());
+                                    MessageBox.Show("Delete person OK  ID == " + BitConverter.ToInt64(temp, 0).ToString());
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Delete person Fail!");
+                                }
+
+                            }
+                            command.CommandText = $"DELETE FROM Empleados WHERE IdEmpleado = @id";
+                            command.Parameters.AddWithValue("@id", idEmpleado);
+                            command.ExecuteNonQuery();
+                            CargarListViewEmpleados();
+                            MessageBox.Show("El empleado ha sido eliminado de la base de datos.");
                         }
                     }
                 }
@@ -621,16 +685,6 @@ namespace AppRegistros
         }
 
 
-        private void CargarDatosAGrilla()
-        {
-            command.CommandText = "SELECT * FROM Empleados";
-            SQLiteDataReader empleadosReader = command.ExecuteReader();
-
-            DataTable empleadosTable = new DataTable();
-            empleadosTable.Load(empleadosReader);
-            dataGridEmpleados.DataSource = empleadosTable;
-        }
-
         public void dbg_info(string dbg_string)
         {
             Debug.WriteLine("Time:" + DateTime.Now.ToString("HH-mm-ss") + " ----[  " + dbg_string + "  ]", " SDK_DBG_INFO");
@@ -642,120 +696,6 @@ namespace AppRegistros
         private string Employee_array_to_srring(byte[] EmployeeId)
         {
             return BitConverter.ToString(EmployeeId).Replace("-", "");
-        }
-
-        public void CalcularHorasTotalesPorEmpleado()
-        {
-            command.CommandText = @"
-                SELECT IdEmpleado, Fecha, TipoRegistro 
-                FROM Registros 
-                ORDER BY IdEmpleado, Fecha";
-
-            string idEmpleadoActual = null;
-            DateTime? entrada = null;
-            double totalHoras = 0;
-
-            var reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                string idEmpleado = (string)reader["IdEmpleado"];
-                string fechaStr = (string)reader["Fecha"];
-                DateTime fecha = DateTime.ParseExact(fechaStr, "yyyy-MM-dd HH:mm:ss", null);
-                string tipoRegistro = (string)reader["TipoRegistro"];
-
-                if (idEmpleado != idEmpleadoActual)
-                {
-                    if (idEmpleadoActual != null && entrada.HasValue)
-                    {
-                        // Si había una jornada anterior, calcular la diferencia
-                        totalHoras += (fecha - entrada.Value).TotalHours;
-                        reader.Close();
-                        ActualizarHorasTotales(idEmpleadoActual, totalHoras);
-                        reader = command.ExecuteReader();
-                    }
-
-                    // Reset para el nuevo empleado
-                    idEmpleadoActual = idEmpleado;
-                    entrada = null;
-                    totalHoras = 0;
-                }
-
-                if (tipoRegistro == "0")
-                {
-                    entrada = fecha;
-                }
-                else if (tipoRegistro == "1" && entrada.HasValue)
-                {
-                    totalHoras += (fecha - entrada.Value).TotalHours;
-                    entrada = null; // Reset entrada después de cada salida
-                }
-            }
-
-            // Actualizar la última jornada si quedó pendiente
-            if (idEmpleadoActual != null && entrada.HasValue)
-            {
-                totalHoras += (DateTime.Now - entrada.Value).TotalHours;
-                reader.Close();
-                ActualizarHorasTotales(idEmpleadoActual, totalHoras);
-            }
-            reader.Close();
-        }
-
-        private void ActualizarHorasTotales(string idEmpleado, double totalHoras)
-        {
-            command.CommandText = @"
-                UPDATE Registros 
-                SET TotalHoras = @TotalHoras 
-                WHERE IdEmpleado = @IdEmpleado";
-            command.Parameters.Clear();
-            command.Parameters.AddWithValue("@TotalHoras", totalHoras);
-            command.Parameters.AddWithValue("@IdEmpleado", idEmpleado);
-            command.ExecuteNonQuery();
-        }
-
-        public double CalcularHorasTrabajadasPorDia(string idEmpleado, string fecha)
-        {
-            command.CommandText = @"
-                SELECT 
-                MIN(Fecha) AS Entrada, 
-                MAX(Fecha) AS Salida
-                FROM Registros 
-                WHERE IdEmpleado = @IdEmpleado AND Fecha LIKE @Fecha || '%' AND (tiporegistro = '0' OR tiporegistro = '1')";
-
-            command.Parameters.AddWithValue("@IdEmpleado", idEmpleado);
-            command.Parameters.AddWithValue("@Fecha", fecha);
-
-            using (var reader = command.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    var entrada = reader["Entrada"].ToString();
-                    var salida = reader["Salida"].ToString();
-
-                    if (!string.IsNullOrEmpty(entrada) && !string.IsNullOrEmpty(salida))
-                    {
-                        DateTime entradaDT = DateTime.Parse(entrada);
-                        DateTime salidaDT = DateTime.Parse(salida);
-                        TimeSpan horasTrabajadas = salidaDT - entradaDT;
-                        return horasTrabajadas.TotalHours;
-                    }
-                }
-                reader.Close();
-            }
-            return 0;
-        }
-
-        public double CalcularHorasTotalesEnRango(string idEmpleado, DateTime fechaInicio, DateTime fechaFin)
-        {
-            double totalHoras = 0;
-
-            for (var fecha = fechaInicio; fecha <= fechaFin; fecha = fecha.AddDays(1))
-            {
-                string fechaStr = fecha.ToString("yyyy-MM-dd");
-                totalHoras += CalcularHorasTrabajadasPorDia(idEmpleado, fechaStr);
-            }
-
-            return totalHoras;
         }
 
         private void ObtenerHorasTrabajadasPorDia()
@@ -792,6 +732,52 @@ namespace AppRegistros
                     dbg_info($"Empleado: {idEmpleado}, Fecha: {fecha}, Horas Trabajadas: {horasTrabajadas}");
                 }
             }
+
+        }
+
+        private byte[] string_to_my_unicodebyte(int bytemax, string str)
+        {
+            if (bytemax > 0)
+            {
+                byte[] byte_out = new byte[bytemax];// unicode
+                int i;                           // 
+                byte[] bytestr = Encoding.Unicode.GetBytes(str);
+                for (i = 0; i < bytemax; i += 2)
+                {
+                    if (i < bytestr.Length)
+                    {
+                        byte_out[i] = bytestr[i + 1];
+                        byte_out[i + 1] = bytestr[i];
+                        continue;
+                    }
+                    byte_out[i] = 0;
+                }
+                return byte_out;
+            }
+            return null;
+        }
+
+        private void string_to_byte(string str, byte[] value, byte len)
+        {
+            int i;
+            ulong ul_value = Convert.ToUInt64(str);
+            for (i = 0; i < len; i++)
+            {
+                value[i] = (byte)((ul_value & ((ulong)0xFF << (8 * (len - i - 1)))) >> (8 * (len - i - 1)));
+            }
+        }
+        private string byte_to_unicode_string(byte[] StrData)
+        {
+            int i;
+            byte[] StringData = new byte[StrData.Length];
+
+            for (i = 0; i + 1 < StringData.Length; i += 2)
+            {
+                StringData[i] = StrData[i + 1];
+                StringData[i + 1] = StrData[i];
+            }
+            return Encoding.Unicode.GetString(StringData).Replace("\0", "");
+            //return Encoding.UTF8.GetString(StringData).Replace("\0", "");
         }
     }
 }
