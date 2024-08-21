@@ -103,7 +103,7 @@ namespace AppRegistros
 
 
         // DISPOSITIVO
-        public void btnConectarDispositivo_Click(object sender, EventArgs e)
+        public async void btnConectarDispositivo_Click(object sender, EventArgs e)
         {
             try
             {
@@ -135,11 +135,17 @@ namespace AppRegistros
                     // Verifica el valor de retorno esperado para una conexión exitosa
                     if (ret == 1)
                     {
-                        MessageBox.Show("Conexión exitosa", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        groupBoxInicio.Hide();
+                        progressBarCargando.Style = ProgressBarStyle.Marquee;
+                        progressBarCargando.Visible = true;
+                        btnConectarDispositivo.Enabled = false;
+                        groupBoxInicio.Enabled = false;
+
+                        await Task.Delay(500);
                         LoguearDispositivo();
                         ObtenerInfoEmpleado();
                         CargarListViewEmpleados();
+                        DownloadAllRecords();
+                        groupBoxInicio.Hide();
                     }
                     else
                     {
@@ -173,7 +179,7 @@ namespace AppRegistros
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        // leer los registros del dispositivo
+        // leer los nuevos registros del dispositivo
         public void LoguearDispositivo()
         {
             try
@@ -453,6 +459,7 @@ namespace AppRegistros
         private void btnBuscarRegistros_Click(object sender, EventArgs e)
         {
             ObtenerHorasTrabajadasPorDia();
+            //DownloadAllRecords();
             CargarListViewRegistros();
         }
         private void CargarListViewRegistros()
@@ -474,7 +481,7 @@ namespace AppRegistros
                        (strftime('%s', MAX(r.Fecha)) - strftime('%s', MIN(r.Fecha))) / 3600.0 AS HorasTrabajadas
                 FROM Registros r
                 JOIN Empleados e ON r.IdEmpleado = e.IdEmpleado
-                WHERE (r.IdEmpleado = @idEmpleado OR r.IdEmpleado = @searchTermWithZeros OR e.NombreEmpleado LIKE @nombre)
+                WHERE (r.IdEmpleado = @idEmpleado OR r.IdEmpleado = @searchTermWithZeros OR e.NombreEmpleado LIKE @nombre OR e.DNI LIKE @nombre)
                 AND r.Fecha BETWEEN @fechaInicio AND @fechaFin 
                 AND r.TipoRegistro IN (0, 1)
                 GROUP BY r.IdEmpleado, DATE(r.Fecha)
@@ -504,6 +511,61 @@ namespace AppRegistros
             reader.Close();
             txtHorasTotales.Text = totalHorasTrabajadas.ToString("F2");
         }
+        private void DownloadAllRecords()
+        {
+            ret = AnvizNew.CChex_DownloadAllRecords(anviz_handle, dev_idx[0]);
+            if (ret > 0)
+            {
+                pBuff = IntPtr.Zero;
+                len = 10000;
+                pBuff = Marshal.AllocHGlobal(len);
+
+                if (anviz_handle != IntPtr.Zero)
+                {
+                    ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
+                    dbg_info("CChex_Update returned: " + ret);
+
+                    while (ret <= 0)
+                    {
+                        ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
+                        dbg_info("CChex_Update returned: " + ret);
+                    }
+                    if (ret <= 0)
+                    {
+                        dbg_info("Datos devueltos invalidos o espacio del buffer insuficiente.");
+                    }
+                    else
+                    {
+                        dbg_info("Recibido mensaje de tipo: " + Type[0]);
+                        while (ret > 0)
+                        {
+                            AnvizNew.CCHEX_RET_RECORD_INFO_STRU record_info;
+                            record_info = (AnvizNew.CCHEX_RET_RECORD_INFO_STRU)Marshal.PtrToStructure(pBuff, typeof(AnvizNew.CCHEX_RET_RECORD_INFO_STRU));
+
+                            byte[] dateBytes = record_info.Date.Reverse().ToArray();
+                            int secondsSince20000102 = BitConverter.ToInt32(dateBytes, 0);
+
+                            // Fecha base: 2 de enero de 2000
+                            DateTime baseDate = new DateTime(2000, 1, 2, 0, 0, 0, DateTimeKind.Utc);
+
+                            // Añadir los segundos a la fecha base para obtener la fecha y hora del registro
+                            DateTime recordDate = baseDate.AddSeconds(secondsSince20000102);
+                            string dateStr = recordDate.ToString("yyyy-MM-dd HH:mm:ss");
+                            string idEmpleado = Employee_array_to_srring(record_info.EmployeeId);
+                            string tipoRegistro = record_info.RecordType.ToString();
+
+                            InsertarRegistro(idEmpleado, tipoRegistro, dateStr);
+                            ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
+                        }
+                    }
+                    Marshal.FreeHGlobal(pBuff);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error al descargar los registros", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
 
 
@@ -515,7 +577,7 @@ namespace AppRegistros
                 ListViewItem itemSeleccionado = listViewEmpleados.SelectedItems[0];
                 string idEmpleadoAEditarStr = itemSeleccionado.SubItems[0].Text;
 
-                EditarEmpleadoView editarEmpleadoView = new EditarEmpleadoView(dev_idx[0], anviz_handle, Type[0], idEmpleadoAEditarStr);
+                EditarEmpleadoView editarEmpleadoView = new EditarEmpleadoView(anviz_handle, dev_idx[0], Type[0], idEmpleadoAEditarStr);
                 editarEmpleadoView.ShowDialog();
                 CargarListViewEmpleados();
             }
@@ -731,6 +793,7 @@ namespace AppRegistros
 
                     dbg_info($"Empleado: {idEmpleado}, Fecha: {fecha}, Horas Trabajadas: {horasTrabajadas}");
                 }
+                dbg_info("Horas trabajadas obtenidas correctamente");
             }
 
         }

@@ -64,6 +64,7 @@
             btnEditar = new Button();
             btnEliminar = new Button();
             groupBoxInicio = new GroupBox();
+            progressBarCargando = new ProgressBar();
             tabControlEmpleados = new TabControl();
             tabPageEmpleados = new TabPage();
             label3 = new Label();
@@ -391,6 +392,7 @@
             // groupBoxInicio
             // 
             groupBoxInicio.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxInicio.Controls.Add(progressBarCargando);
             groupBoxInicio.Controls.Add(label1);
             groupBoxInicio.Controls.Add(btnConectarDispositivo);
             groupBoxInicio.Controls.Add(textBoxIpDispositivo);
@@ -402,6 +404,13 @@
             groupBoxInicio.Size = new Size(1131, 559);
             groupBoxInicio.TabIndex = 35;
             groupBoxInicio.TabStop = false;
+            // 
+            // progressBarCargando
+            // 
+            progressBarCargando.Location = new Point(459, 429);
+            progressBarCargando.Name = "progressBarCargando";
+            progressBarCargando.Size = new Size(225, 29);
+            progressBarCargando.TabIndex = 7;
             // 
             // tabControlEmpleados
             // 
@@ -585,5 +594,6 @@
         private ColumnHeader columnHeader4;
         private TextBox txtHorasTotales;
         private Label label6;
+        private ProgressBar progressBarCargando;
     }
 }

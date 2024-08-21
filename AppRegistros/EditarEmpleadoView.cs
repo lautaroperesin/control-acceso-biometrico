@@ -18,13 +18,13 @@ namespace AppRegistros
         int[] dev_idx = new int[1];
         int[] Type = new int[1];
 
-        public EditarEmpleadoView(int dev_idx, IntPtr anviz_handle, int Type,string idEmpleadoAEditar)
+        public EditarEmpleadoView(IntPtr anviz_handle, int dev_idx, int Type,string idEmpleadoAEditar)
         {
             InitializeComponent();
             cmd.Connection = Helper.CrearConexion();
-            this.idEmpleadoAEditar = idEmpleadoAEditar;
             this.anviz_handle = anviz_handle;
             this.dev_idx[0] = dev_idx;
+            this.idEmpleadoAEditar = idEmpleadoAEditar;
             CargarDatosEnPantalla();
         }
 
@@ -40,10 +40,6 @@ namespace AppRegistros
                     txtNombreEmpleado.Text = (string)empleadoReader["NombreEmpleado"];
                     txtDocumento.Text = (string)empleadoReader["DNI"];
                     txtAreaTrabajo.Text = (string)empleadoReader["AreaTrabajo"];
-                }
-                else
-                {
-                    Debug.WriteLine("El reader no se ha leido");
                 }
             }
             empleadoReader?.Close();
@@ -64,38 +60,45 @@ namespace AppRegistros
             cmd.Parameters.AddWithValue("@id", this.idEmpleadoAEditar);
             cmd.ExecuteNonQuery();
 
-            CCHEX_RET_PERSON_INFO_STRU empleado = new CCHEX_RET_PERSON_INFO_STRU();
-            empleado.EmployeeId = ConvertToEmployeeIdByteArray(this.idEmpleadoAEditar);
-            empleado.EmployeeName = ConvertToEmployeeNameByteArray(nuevoNombre);
+            // Editar en dispositivo
+            // Convertir el ID de empleado en un array de bytes de 5 bytes
+            byte[] employeeIdBytes = Encoding.ASCII.GetBytes(this.idEmpleadoAEditar.PadLeft(5, '0'));
 
-            int ret = AnvizNew.CChex_ModifyPersonInfo(anviz_handle, dev_idx[0], ref empleado, 1);
-            try
+            // Crear la estructura con la nueva información
+            CCHEX_RET_PERSON_INFO_STRU personInfo = new CCHEX_RET_PERSON_INFO_STRU
             {
-                int len = Marshal.SizeOf(typeof(CCHEX_RET_PERSON_INFO_STRU)) * 50;
-                IntPtr pBuff = Marshal.AllocHGlobal(len);
+                MachineId = (uint)dev_idx[0], // Usa el DevIdx del dispositivo
+                CurIdx = 0, // Indice actual del usuario (lo puedes dejar en 0)
+                TotalCnt = 1, // Total de usuarios a modificar (1 en este caso)
+                EmployeeId = employeeIdBytes,
+                password_len = 0, // Asumimos que no hay cambio en la contraseña
+                max_password = 6, // Longitud máxima de contraseña
+                password = 0, // No cambiar la contraseña
+                max_card_id = 10, // Longitud máxima del ID de tarjeta
+                card_id = 0, // No cambiar la tarjeta
+                max_EmployeeName = 64, // Longitud máxima del nombre
+                EmployeeName = Encoding.ASCII.GetBytes(nuevoNombre),
+                DepartmentId = 0, // Si tienes un ID de departamento puedes asignarlo aquí
+                GroupId = 0, // Si tienes un ID de grupo puedes asignarlo aquí
+                Mode = 0, // Modo de asistencia (ajustar según sea necesario)
+                Fp_Status = 0, // Estado de registro biométrico
+                Rserved1 = 0, // Reservado
+                Rserved2 = 0, // Reservado
+                Special = 0, // Información especial (si aplica)
+                EmployeeName2 = Encoding.ASCII.GetBytes(string.Empty), // Nombre adicional (si aplica)
+                RFC = new byte[13], // RFC (si aplica)
+                CURP = new byte[18] // CURP (si aplica)
+            };
 
-                if (anviz_handle != IntPtr.Zero)
-                {
-                    ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
+            int ret = CChex_ModifyPersonInfo(anviz_handle, dev_idx[0], ref personInfo, 1);
 
-                    while (ret <= 0)
-                    {
-                        ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
-                    }
-
-                    if (ret > 0)
-                    {
-                        MessageBox.Show("Empleado actualizado correctamente");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error al actualizar el empleado");
-                    }
-                }
+            if (ret > 0)
+            {
+                MessageBox.Show("Empleado actualizado correctamente en el dispositivo.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("Error al actualizar el empleado");
+                MessageBox.Show("Error al actualizar el empleado en el dispositivo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             this.Close();
         }
