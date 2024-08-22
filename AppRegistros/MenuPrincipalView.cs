@@ -602,23 +602,26 @@ namespace AppRegistros
 
                 if (respuesta == DialogResult.Yes)
                 {
-                    if ((DevTypeFlag[dev_idx[0]] & 0xff) == (int)AnvizNew.CustomType.DEV_TYPE_VER_4_NEWID)
+                    ulong idEmpleadoAEliminarNum = ulong.Parse(idEmpleadoAEliminar);
+                    byte[] idEmpleadoAEliminarBytesFull = BitConverter.GetBytes(idEmpleadoAEliminarNum);
+
+
+                    if (BitConverter.IsLittleEndian)
                     {
-                        AnvizNew.CCHEX_DEL_EMPLOYEE_INFO_STRU_EXT_INF_ID_VER_4_NEWID delete_item;
-                        delete_item.EmployeeId = string_to_my_unicodebyte(28, idEmpleadoAEliminar);
-                        delete_item.operation = 0xFF;
-                        ret = AnvizNew.CChex_DeletePersonInfo_VER_4_NEWID(anviz_handle, dev_idx[0], ref delete_item);
-                        EliminarEmpleadoDelDispositivo(idEmpleadoAEliminar);
+                        Array.Reverse(idEmpleadoAEliminarBytesFull);
                     }
-                    else
+
+                    // BitConverter produce un array de 4 bytes, hay que extenderlo a 5 bytes
+                    byte[] idEmpleadoAEliminar5Bytes = new byte[5];
+                    Array.Copy(idEmpleadoAEliminarBytesFull, 3, idEmpleadoAEliminar5Bytes, 0, 5);
+                    AnvizNew.CCHEX_DEL_PERSON_INFO_STRU delete_item = new CCHEX_DEL_PERSON_INFO_STRU
                     {
-                        AnvizNew.CCHEX_DEL_PERSON_INFO_STRU delete_item;
-                        delete_item.EmployeeId = new byte[5];
-                        string_to_byte(idEmpleadoAEliminar, delete_item.EmployeeId, 5);
-                        delete_item.operation = 0xFF;
-                        ret = AnvizNew.CChex_DeletePersonInfo(anviz_handle, dev_idx[0], ref delete_item);
-                        EliminarEmpleadoDelDispositivo(idEmpleadoAEliminar);
-                    }
+                        EmployeeId = idEmpleadoAEliminar5Bytes,
+                        operation = 0xFF
+                    };
+                    ret = AnvizNew.CChex_DeletePersonInfo(anviz_handle, dev_idx[0], ref delete_item);
+                    EliminarEmpleadoDelDispositivo(idEmpleadoAEliminar);
+                }
                     //EliminarEmpleadoDelDispositivo(idEmpleadoAEliminar);
                     //        if (eliminadoDelDispositivo)
                     //        {
@@ -632,7 +635,6 @@ namespace AppRegistros
                     //        {
                     //            MessageBox.Show("Error al eliminar el empleado del dispositivo. No se realizó la eliminación en la base de datos.");
                     //        }
-                }
             }
             else
             {
@@ -668,7 +670,7 @@ namespace AppRegistros
                 pBuff = IntPtr.Zero;
                 try
                 {
-                    len = Marshal.SizeOf(typeof(CCHEX_DEL_PERSON_INFO_STRU)) + 10;
+                    len = Marshal.SizeOf(typeof(CCHEX_DEL_PERSON_INFO_STRU)) * 100;
                     pBuff = Marshal.AllocHGlobal(len);
 
                     if (anviz_handle != IntPtr.Zero)
@@ -690,11 +692,11 @@ namespace AppRegistros
                                 result = (AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU_VER_4_NEWID)Marshal.PtrToStructure(pBuff, typeof(AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU_VER_4_NEWID));
                                 if (result.Result == 0)
                                 {
-                                    MessageBox.Show("Delete person OK  ID == " + byte_to_unicode_string(result.EmployeeId));
+                                    MessageBox.Show("Empleado eliminado correctamente. ID: " + byte_to_unicode_string(result.EmployeeId));
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Delete person Fail!");
+                                    MessageBox.Show("Error al eliminar el empleado");
                                 }
                             }
                             else
@@ -710,17 +712,19 @@ namespace AppRegistros
                                         temp[8 - 4 - i] = result.EmployeeId[i];
                                     }
                                     dbg_info(BitConverter.ToInt64(temp, 0).ToString());
-                                    MessageBox.Show("Delete person OK  ID == " + BitConverter.ToInt64(temp, 0).ToString());
+
+                                    // Eliminar de la base de datos
+                                    command.CommandText = $"DELETE FROM Empleados WHERE IdEmpleado = @id";
+                                    command.Parameters.AddWithValue("@id", idEmpleado);
+                                    command.ExecuteNonQuery();
+                                    MessageBox.Show("Empleado eliminado correctamente. ID: " + BitConverter.ToInt64(temp, 0).ToString());
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Delete person Fail!");
+                                    MessageBox.Show("Error al eliminar el empleado");
                                 }
 
                             }
-                            command.CommandText = $"DELETE FROM Empleados WHERE IdEmpleado = @id";
-                            command.Parameters.AddWithValue("@id", idEmpleado);
-                            command.ExecuteNonQuery();
                             CargarListViewEmpleados();
                             MessageBox.Show("El empleado ha sido eliminado de la base de datos.");
                         }

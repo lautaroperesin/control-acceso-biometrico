@@ -3,6 +3,7 @@ using AppRegistros.Utils;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Drawing;
+using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Text;
 using static AnvizDemo.AnvizNew;
@@ -51,6 +52,71 @@ namespace AppRegistros
             string nuevoDni = txtDocumento.Text;
             string nuevaAreaTrabajo = txtAreaTrabajo.Text;
 
+            // Editar en dispositivo
+            //string idEmpleadoAEditarStr = this.idEmpleadoAEditar.PadLeft(5, '0').Substring(this.idEmpleadoAEditar.Length > 5 ? this.idEmpleadoAEditar.Length - 5 : 0);
+            //byte[] idEmpleadoAEditarBytes = Encoding.ASCII.GetBytes(idEmpleadoAEditarStr);
+
+            ulong idEmpleadoNumerico = ulong.Parse(idEmpleadoAEditar);
+            byte[] idEmpleadoAEditarBytes = BitConverter.GetBytes(idEmpleadoNumerico);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(idEmpleadoAEditarBytes);
+            }
+
+            // BitConverter produce un array de 4 bytes, hay que extenderlo a 5 bytes
+            byte[] idEmpleadoAEditar5Bytes = new byte[5];
+            Array.Copy(idEmpleadoAEditarBytes, 3, idEmpleadoAEditar5Bytes, 0, 5);
+
+            // Crear la estructura con la nueva información
+            AnvizNew.CCHEX_RET_PERSON_INFO_STRU personInfo = new AnvizNew.CCHEX_RET_PERSON_INFO_STRU
+            {
+                EmployeeId = idEmpleadoAEditar5Bytes
+            };
+
+            personInfo.EmployeeName = new byte[64];
+            byte[] name = Encoding.Default.GetBytes(nuevoNombre);
+            Array.Copy(name, personInfo.EmployeeName, Math.Min(name.Length, 64));
+
+            int ret = CChex_ModifyPersonInfo(anviz_handle, dev_idx[0], ref personInfo, 1);
+
+            IntPtr pBuff;
+            int len = 10000;
+            pBuff = Marshal.AllocHGlobal(len);
+
+            if (anviz_handle != IntPtr.Zero)
+            {
+                ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
+                Debug.WriteLine("CChex_Update returned: " + ret);
+
+                while (ret <= 0)
+                {
+                    ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
+                    Debug.WriteLine("CChex_Update returned: " + ret);
+                }
+                if (ret > 0)
+                {
+                    if (Type[0] == (int)AnvizNew.MsgType.CCHEX_RET_ULEMPLOYEE2_UNICODE_INFO_TYPE)
+                    {
+                        AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU result;
+                        result = (AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU)Marshal.PtrToStructure(pBuff, typeof(AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU));
+                        if (result.Result == 0)
+                        {
+                            MessageBox.Show("Empleado modificado correctamente. ID: " + Employee_array_to_srring(result.EmployeeId));
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error al modificar el empleado. ID: " + Employee_array_to_srring(result.EmployeeId));
+                        }
+                    }
+                }
+                else
+                {
+                        Debug.WriteLine("Datos devueltos invalidos o espacio del buffer insuficiente.");
+                }
+                Marshal.FreeHGlobal(pBuff);
+            }
+
             // Editar en base de datos
             cmd.Parameters.Clear();
             cmd.CommandText = $"UPDATE Empleados SET NombreEmpleado = @NombreEmpleado, DNI = @dni, AreaTrabajo = @AreaTrabajo WHERE IdEmpleado = @id";
@@ -59,47 +125,6 @@ namespace AppRegistros
             cmd.Parameters.AddWithValue("@AreaTrabajo", nuevaAreaTrabajo);
             cmd.Parameters.AddWithValue("@id", this.idEmpleadoAEditar);
             cmd.ExecuteNonQuery();
-
-            // Editar en dispositivo
-            // Convertir el ID de empleado en un array de bytes de 5 bytes
-            byte[] employeeIdBytes = Encoding.ASCII.GetBytes(this.idEmpleadoAEditar.PadLeft(5, '0'));
-
-            // Crear la estructura con la nueva información
-            CCHEX_RET_PERSON_INFO_STRU personInfo = new CCHEX_RET_PERSON_INFO_STRU
-            {
-                MachineId = (uint)dev_idx[0], // Usa el DevIdx del dispositivo
-                CurIdx = 0, // Indice actual del usuario (lo puedes dejar en 0)
-                TotalCnt = 1, // Total de usuarios a modificar (1 en este caso)
-                EmployeeId = employeeIdBytes,
-                password_len = 0, // Asumimos que no hay cambio en la contraseña
-                max_password = 6, // Longitud máxima de contraseña
-                password = 0, // No cambiar la contraseña
-                max_card_id = 10, // Longitud máxima del ID de tarjeta
-                card_id = 0, // No cambiar la tarjeta
-                max_EmployeeName = 64, // Longitud máxima del nombre
-                EmployeeName = Encoding.ASCII.GetBytes(nuevoNombre),
-                DepartmentId = 0, // Si tienes un ID de departamento puedes asignarlo aquí
-                GroupId = 0, // Si tienes un ID de grupo puedes asignarlo aquí
-                Mode = 0, // Modo de asistencia (ajustar según sea necesario)
-                Fp_Status = 0, // Estado de registro biométrico
-                Rserved1 = 0, // Reservado
-                Rserved2 = 0, // Reservado
-                Special = 0, // Información especial (si aplica)
-                EmployeeName2 = Encoding.ASCII.GetBytes(string.Empty), // Nombre adicional (si aplica)
-                RFC = new byte[13], // RFC (si aplica)
-                CURP = new byte[18] // CURP (si aplica)
-            };
-
-            int ret = CChex_ModifyPersonInfo(anviz_handle, dev_idx[0], ref personInfo, 1);
-
-            if (ret > 0)
-            {
-                MessageBox.Show("Empleado actualizado correctamente en el dispositivo.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("Error al actualizar el empleado en el dispositivo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             this.Close();
         }
         private byte[] ConvertToEmployeeIdByteArray(string employeeId)
@@ -112,6 +137,19 @@ namespace AppRegistros
             byte[] nameBytes = new byte[64];
             Encoding.ASCII.GetBytes(employeeName, 0, employeeName.Length, nameBytes, 0);
             return nameBytes;
+        }
+        private void string_to_byte(string str, byte[] value, byte len)
+        {
+            int i;
+            ulong ul_value = Convert.ToUInt64(str);
+            for (i = 0; i < len; i++)
+            {
+                value[i] = (byte)((ul_value & ((ulong)0xFF << (8 * (len - i - 1)))) >> (8 * (len - i - 1)));
+            }
+        }
+        private string Employee_array_to_srring(byte[] EmployeeId)
+        {
+            return BitConverter.ToString(EmployeeId).Replace("-", "");
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
