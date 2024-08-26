@@ -14,12 +14,12 @@ namespace AppRegistros
     public partial class EditarEmpleadoView : Form
     {
         SQLiteCommand cmd = new SQLiteCommand();
-        private string? idEmpleadoAEditar;
+        private int idEmpleadoAEditar;
         IntPtr anviz_handle;
         int[] dev_idx = new int[1];
         int[] Type = new int[1];
 
-        public EditarEmpleadoView(IntPtr anviz_handle, int dev_idx, int Type,string idEmpleadoAEditar)
+        public EditarEmpleadoView(IntPtr anviz_handle, int dev_idx, int Type,int idEmpleadoAEditar)
         {
             InitializeComponent();
             cmd.Connection = Helper.CrearConexion();
@@ -53,11 +53,7 @@ namespace AppRegistros
             string nuevaAreaTrabajo = txtAreaTrabajo.Text;
 
             // Editar en dispositivo
-            //string idEmpleadoAEditarStr = this.idEmpleadoAEditar.PadLeft(5, '0').Substring(this.idEmpleadoAEditar.Length > 5 ? this.idEmpleadoAEditar.Length - 5 : 0);
-            //byte[] idEmpleadoAEditarBytes = Encoding.ASCII.GetBytes(idEmpleadoAEditarStr);
-
-            ulong idEmpleadoNumerico = ulong.Parse(idEmpleadoAEditar);
-            byte[] idEmpleadoAEditarBytes = BitConverter.GetBytes(idEmpleadoNumerico);
+            byte[] idEmpleadoAEditarBytes = BitConverter.GetBytes(idEmpleadoAEditar);
 
             if (BitConverter.IsLittleEndian)
             {
@@ -66,7 +62,7 @@ namespace AppRegistros
 
             // BitConverter produce un array de 4 bytes, hay que extenderlo a 5 bytes
             byte[] idEmpleadoAEditar5Bytes = new byte[5];
-            Array.Copy(idEmpleadoAEditarBytes, 3, idEmpleadoAEditar5Bytes, 0, 5);
+            Array.Copy(idEmpleadoAEditarBytes, 0, idEmpleadoAEditar5Bytes, 1, 4);
 
             // Crear la estructura con la nueva información
             AnvizNew.CCHEX_RET_PERSON_INFO_STRU personInfo = new AnvizNew.CCHEX_RET_PERSON_INFO_STRU
@@ -86,14 +82,10 @@ namespace AppRegistros
 
             if (anviz_handle != IntPtr.Zero)
             {
+                Thread.Sleep(100);
                 ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
                 Debug.WriteLine("CChex_Update returned: " + ret);
 
-                while (ret <= 0)
-                {
-                    ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
-                    Debug.WriteLine("CChex_Update returned: " + ret);
-                }
                 if (ret > 0)
                 {
                     if (Type[0] == (int)AnvizNew.MsgType.CCHEX_RET_ULEMPLOYEE2_UNICODE_INFO_TYPE)
@@ -127,26 +119,7 @@ namespace AppRegistros
             cmd.ExecuteNonQuery();
             this.Close();
         }
-        private byte[] ConvertToEmployeeIdByteArray(string employeeId)
-        {
-            return Encoding.ASCII.GetBytes(employeeId.PadLeft(10, '0').Substring(0, 5));
-        }
 
-        private byte[] ConvertToEmployeeNameByteArray(string employeeName)
-        {
-            byte[] nameBytes = new byte[64];
-            Encoding.ASCII.GetBytes(employeeName, 0, employeeName.Length, nameBytes, 0);
-            return nameBytes;
-        }
-        private void string_to_byte(string str, byte[] value, byte len)
-        {
-            int i;
-            ulong ul_value = Convert.ToUInt64(str);
-            for (i = 0; i < len; i++)
-            {
-                value[i] = (byte)((ul_value & ((ulong)0xFF << (8 * (len - i - 1)))) >> (8 * (len - i - 1)));
-            }
-        }
         private string Employee_array_to_srring(byte[] EmployeeId)
         {
             return BitConverter.ToString(EmployeeId).Replace("-", "");

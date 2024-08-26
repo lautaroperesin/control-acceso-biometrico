@@ -67,6 +67,7 @@
             progressBarCargando = new ProgressBar();
             tabControlEmpleados = new TabControl();
             tabPageEmpleados = new TabPage();
+            btnCargarEmpleados = new Button();
             label3 = new Label();
             txtIdEmpleado = new TextBox();
             tabPageRegistros = new TabPage();
@@ -431,6 +432,7 @@
             // tabPageEmpleados
             // 
             tabPageEmpleados.BackColor = Color.Transparent;
+            tabPageEmpleados.Controls.Add(btnCargarEmpleados);
             tabPageEmpleados.Controls.Add(label3);
             tabPageEmpleados.Controls.Add(txtIdEmpleado);
             tabPageEmpleados.Controls.Add(listViewEmpleados);
@@ -445,12 +447,24 @@
             tabPageEmpleados.TabIndex = 0;
             tabPageEmpleados.Text = "Empleados";
             // 
+            // btnCargarEmpleados
+            // 
+            btnCargarEmpleados.Anchor = AnchorStyles.None;
+            btnCargarEmpleados.Font = new Font("Segoe UI", 10F);
+            btnCargarEmpleados.Location = new Point(159, 294);
+            btnCargarEmpleados.Name = "btnCargarEmpleados";
+            btnCargarEmpleados.Size = new Size(218, 33);
+            btnCargarEmpleados.TabIndex = 37;
+            btnCargarEmpleados.Text = "Cargar empleados";
+            btnCargarEmpleados.UseVisualStyleBackColor = true;
+            btnCargarEmpleados.Click += btnCargarEmpleados_Click;
+            // 
             // label3
             // 
             label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 10F);
-            label3.Location = new Point(99, 122);
+            label3.Location = new Point(79, 146);
             label3.Name = "label3";
             label3.Size = new Size(158, 23);
             label3.TabIndex = 36;
@@ -460,7 +474,7 @@
             // 
             txtIdEmpleado.Anchor = AnchorStyles.None;
             txtIdEmpleado.Font = new Font("Segoe UI", 10F);
-            txtIdEmpleado.Location = new Point(271, 116);
+            txtIdEmpleado.Location = new Point(252, 139);
             txtIdEmpleado.Name = "txtIdEmpleado";
             txtIdEmpleado.Size = new Size(125, 30);
             txtIdEmpleado.TabIndex = 35;
@@ -595,5 +609,6 @@
         private TextBox txtHorasTotales;
         private Label label6;
         private ProgressBar progressBarCargando;
+        private Button btnCargarEmpleados;
     }
 }
