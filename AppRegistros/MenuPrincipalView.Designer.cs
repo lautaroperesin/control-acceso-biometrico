@@ -67,7 +67,6 @@
             progressBarCargando = new ProgressBar();
             tabControlEmpleados = new TabControl();
             tabPageEmpleados = new TabPage();
-            btnCargarEmpleados = new Button();
             label3 = new Label();
             txtIdEmpleado = new TextBox();
             tabPageRegistros = new TabPage();
@@ -313,9 +312,9 @@
             listViewRegistros.Columns.AddRange(new ColumnHeader[] { columnHeader10, columnHeader3, columnHeader4, columnHeader11, columnHeader12, columnHeader1, columnHeader2 });
             listViewRegistros.FullRowSelect = true;
             listViewRegistros.GridLines = true;
-            listViewRegistros.Location = new Point(99, 92);
+            listViewRegistros.Location = new Point(111, 92);
             listViewRegistros.Name = "listViewRegistros";
-            listViewRegistros.Size = new Size(763, 410);
+            listViewRegistros.Size = new Size(752, 410);
             listViewRegistros.TabIndex = 30;
             listViewRegistros.UseCompatibleStateImageBehavior = false;
             listViewRegistros.View = View.Details;
@@ -323,22 +322,22 @@
             // columnHeader10
             // 
             columnHeader10.Text = "ID";
-            columnHeader10.Width = 150;
+            columnHeader10.Width = 55;
             // 
             // columnHeader3
             // 
             columnHeader3.Text = "Nombre";
-            columnHeader3.Width = 100;
+            columnHeader3.Width = 180;
             // 
             // columnHeader4
             // 
             columnHeader4.Text = "Área";
-            columnHeader4.Width = 100;
+            columnHeader4.Width = 150;
             // 
             // columnHeader11
             // 
             columnHeader11.Text = "Dia";
-            columnHeader11.Width = 150;
+            columnHeader11.Width = 100;
             // 
             // columnHeader12
             // 
@@ -358,7 +357,7 @@
             // 
             btnBuscarEmpleado.Anchor = AnchorStyles.None;
             btnBuscarEmpleado.Font = new Font("Segoe UI", 10F);
-            btnBuscarEmpleado.Location = new Point(56, 218);
+            btnBuscarEmpleado.Location = new Point(56, 237);
             btnBuscarEmpleado.Name = "btnBuscarEmpleado";
             btnBuscarEmpleado.Size = new Size(125, 33);
             btnBuscarEmpleado.TabIndex = 31;
@@ -370,7 +369,7 @@
             // 
             btnEditar.Anchor = AnchorStyles.None;
             btnEditar.Font = new Font("Segoe UI", 10F);
-            btnEditar.Location = new Point(214, 218);
+            btnEditar.Location = new Point(214, 237);
             btnEditar.Name = "btnEditar";
             btnEditar.Size = new Size(122, 33);
             btnEditar.TabIndex = 32;
@@ -382,7 +381,7 @@
             // 
             btnEliminar.Anchor = AnchorStyles.None;
             btnEliminar.Font = new Font("Segoe UI", 10F);
-            btnEliminar.Location = new Point(364, 218);
+            btnEliminar.Location = new Point(364, 237);
             btnEliminar.Name = "btnEliminar";
             btnEliminar.Size = new Size(118, 33);
             btnEliminar.TabIndex = 34;
@@ -412,6 +411,7 @@
             progressBarCargando.Name = "progressBarCargando";
             progressBarCargando.Size = new Size(225, 29);
             progressBarCargando.TabIndex = 7;
+            progressBarCargando.Visible = false;
             // 
             // tabControlEmpleados
             // 
@@ -432,7 +432,6 @@
             // tabPageEmpleados
             // 
             tabPageEmpleados.BackColor = Color.Transparent;
-            tabPageEmpleados.Controls.Add(btnCargarEmpleados);
             tabPageEmpleados.Controls.Add(label3);
             tabPageEmpleados.Controls.Add(txtIdEmpleado);
             tabPageEmpleados.Controls.Add(listViewEmpleados);
@@ -447,24 +446,12 @@
             tabPageEmpleados.TabIndex = 0;
             tabPageEmpleados.Text = "Empleados";
             // 
-            // btnCargarEmpleados
-            // 
-            btnCargarEmpleados.Anchor = AnchorStyles.None;
-            btnCargarEmpleados.Font = new Font("Segoe UI", 10F);
-            btnCargarEmpleados.Location = new Point(159, 294);
-            btnCargarEmpleados.Name = "btnCargarEmpleados";
-            btnCargarEmpleados.Size = new Size(218, 33);
-            btnCargarEmpleados.TabIndex = 37;
-            btnCargarEmpleados.Text = "Cargar empleados";
-            btnCargarEmpleados.UseVisualStyleBackColor = true;
-            btnCargarEmpleados.Click += btnCargarEmpleados_Click;
-            // 
             // label3
             // 
             label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 10F);
-            label3.Location = new Point(79, 146);
+            label3.Location = new Point(79, 165);
             label3.Name = "label3";
             label3.Size = new Size(158, 23);
             label3.TabIndex = 36;
@@ -474,7 +461,7 @@
             // 
             txtIdEmpleado.Anchor = AnchorStyles.None;
             txtIdEmpleado.Font = new Font("Segoe UI", 10F);
-            txtIdEmpleado.Location = new Point(252, 139);
+            txtIdEmpleado.Location = new Point(252, 158);
             txtIdEmpleado.Name = "txtIdEmpleado";
             txtIdEmpleado.Size = new Size(125, 30);
             txtIdEmpleado.TabIndex = 35;
@@ -609,6 +596,5 @@
         private TextBox txtHorasTotales;
         private Label label6;
         private ProgressBar progressBarCargando;
-        private Button btnCargarEmpleados;
     }
 }

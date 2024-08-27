@@ -19,7 +19,7 @@ namespace AppRegistros
         int[] dev_idx = new int[1];
         int[] Type = new int[1];
 
-        public EditarEmpleadoView(IntPtr anviz_handle, int dev_idx, int Type,int idEmpleadoAEditar)
+        public EditarEmpleadoView(IntPtr anviz_handle, int dev_idx, int idEmpleadoAEditar)
         {
             InitializeComponent();
             cmd.Connection = Helper.CrearConexion();
@@ -71,58 +71,23 @@ namespace AppRegistros
             };
 
             personInfo.EmployeeName = new byte[64];
-            byte[] name = Encoding.Default.GetBytes(nuevoNombre);
+            byte[] name = Encoding.ASCII.GetBytes(nuevoNombre);
             Array.Copy(name, personInfo.EmployeeName, Math.Min(name.Length, 64));
 
             int ret = CChex_ModifyPersonInfo(anviz_handle, dev_idx[0], ref personInfo, 1);
 
-            IntPtr pBuff;
-            int len = 10000;
-            pBuff = Marshal.AllocHGlobal(len);
-
-            if (anviz_handle != IntPtr.Zero)
+            if (ret > 0)
             {
-                Thread.Sleep(100);
-                ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
-                Debug.WriteLine("CChex_Update returned: " + ret);
-
-                if (ret > 0)
-                {
-                    if (Type[0] == (int)AnvizNew.MsgType.CCHEX_RET_ULEMPLOYEE2_UNICODE_INFO_TYPE)
-                    {
-                        AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU result;
-                        result = (AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU)Marshal.PtrToStructure(pBuff, typeof(AnvizNew.CCHEX_RET_DEL_EMPLOYEE_INFO_STRU));
-                        if (result.Result == 0)
-                        {
-                            MessageBox.Show("Empleado modificado correctamente. ID: " + Employee_array_to_srring(result.EmployeeId));
-                        }
-                        else
-                        {
-                            MessageBox.Show("Error al modificar el empleado. ID: " + Employee_array_to_srring(result.EmployeeId));
-                        }
-                    }
-                }
-                else
-                {
-                        Debug.WriteLine("Datos devueltos invalidos o espacio del buffer insuficiente.");
-                }
-                Marshal.FreeHGlobal(pBuff);
+                // Editar en base de datos
+                cmd.Parameters.Clear();
+                cmd.CommandText = $"UPDATE Empleados SET NombreEmpleado = @NombreEmpleado, DNI = @dni, AreaTrabajo = @AreaTrabajo WHERE IdEmpleado = @id";
+                cmd.Parameters.AddWithValue("@NombreEmpleado", nuevoNombre);
+                cmd.Parameters.AddWithValue("@dni", nuevoDni);
+                cmd.Parameters.AddWithValue("@AreaTrabajo", nuevaAreaTrabajo);
+                cmd.Parameters.AddWithValue("@id", this.idEmpleadoAEditar);
+                cmd.ExecuteNonQuery();
+                this.Close();
             }
-
-            // Editar en base de datos
-            cmd.Parameters.Clear();
-            cmd.CommandText = $"UPDATE Empleados SET NombreEmpleado = @NombreEmpleado, DNI = @dni, AreaTrabajo = @AreaTrabajo WHERE IdEmpleado = @id";
-            cmd.Parameters.AddWithValue("@NombreEmpleado", nuevoNombre);
-            cmd.Parameters.AddWithValue("@dni", nuevoDni);
-            cmd.Parameters.AddWithValue("@AreaTrabajo", nuevaAreaTrabajo);
-            cmd.Parameters.AddWithValue("@id", this.idEmpleadoAEditar);
-            cmd.ExecuteNonQuery();
-            this.Close();
-        }
-
-        private string Employee_array_to_srring(byte[] EmployeeId)
-        {
-            return BitConverter.ToString(EmployeeId).Replace("-", "");
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
