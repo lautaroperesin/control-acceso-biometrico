@@ -194,11 +194,11 @@ namespace AppRegistros
                             AnvizNew.CCHEX_RET_DEV_LOGIN_STRU dev_info;
                             dev_info = (AnvizNew.CCHEX_RET_DEV_LOGIN_STRU)Marshal.PtrToStructure(pBuff, typeof(AnvizNew.CCHEX_RET_DEV_LOGIN_STRU));
                             string info_buff =
-                                        "Dispositivo conectado --- [MachineId:" + dev_info.MachineId +
-                                        " Dir. IP:" + byte_to_string(dev_info.Addr) +
-                                        " Version:" + byte_to_string(dev_info.Version) + "]";
+                                        "Dispositivo conectado  ---  ID: " + dev_info.MachineId +
+                                        "  ---  Dirección IP y puerto: " + byte_to_string(dev_info.Addr) +
+                                        "  ---  Version: " + byte_to_string(dev_info.Version);
 
-                            dbg_info(info_buff);
+                            log_add_string(info_buff);
                         }
                         break;
                     // Estado del dispositivo = 19
@@ -207,24 +207,37 @@ namespace AppRegistros
                             AnvizNew.CCHEX_RET_DEV_STATUS_STRU status;
                             status = (AnvizNew.CCHEX_RET_DEV_STATUS_STRU)Marshal.PtrToStructure(pBuff, typeof(AnvizNew.CCHEX_RET_DEV_STATUS_STRU));
                             string info_buff =
-                                    "Estado --- [MachineId:" + status.MachineId.ToString()
-                                    + ", Empleados:" + status.EmployeeNum.ToString()
-                                    + ", Huellas:" + status.FingerPrtNum.ToString()
-                                    + ", Contraseñas:" + status.PasswdNum.ToString()
-                                    + ", Cards:" + status.CardNum.ToString()
-                                    + ", Registros:" + status.TotalRecNum.ToString()
-                                    + ", Nuevos Reg:" + status.NewRecNum.ToString() + "]";
-                            dbg_info(info_buff);
+                                    "Estado ---  " + "Empleados: " + status.EmployeeNum.ToString()
+                                    + "  ---  Huellas: " + status.FingerPrtNum.ToString()
+                                    + "  ---  Registros: " + status.TotalRecNum.ToString()
+                                    + "  ---  Nuevos Reg: " + status.NewRecNum.ToString();
+                            log_add_string(info_buff);
                         }
                         break;
-                    // Informacion sobre configuracion de red = 29
+                    // Configuracion basica = 29
                     case (int)AnvizNew.MsgType.CCHEX_RET_GET_BASIC_CFG_TYPE:
-                        dbg_info("Mensaje de tipo 29 recibido");
+                        dbg_info("Mensaje de tipo 29 recibido e ignorado ---------------------------------------------------------------------");
                         break;
                     // Info de registros = 1
                     case (int)AnvizNew.MsgType.CCHEX_RET_RECORD_INFO_TYPE:
                         {
-                            dbg_info("Mensaje de tipo 1 recibido");
+                            AnvizNew.CCHEX_RET_RECORD_INFO_STRU record_info;
+                            record_info = (AnvizNew.CCHEX_RET_RECORD_INFO_STRU)Marshal.PtrToStructure(pBuff, typeof(AnvizNew.CCHEX_RET_RECORD_INFO_STRU));
+
+                            byte[] dateBytes = record_info.Date.Reverse().ToArray();
+                            int secondsSince20000102 = BitConverter.ToInt32(dateBytes, 0);
+
+                            // Fecha base: 2 de enero de 2000
+                            DateTime baseDate = new DateTime(2000, 1, 2, 0, 0, 0, DateTimeKind.Utc);
+
+                            // Añadir los segundos a la fecha base para obtener la fecha y hora del registro
+                            DateTime recordDate = baseDate.AddSeconds(secondsSince20000102);
+                            string dateStr = recordDate.ToString("yyyy-MM-dd HH:mm:ss");
+
+                            string info_buff = "Últimos Registros:  ----  Fecha: " + dateStr
+                                + "  ---  EmpleadoID: " + Employee_array_to_srring(record_info.EmployeeId)
+                                + "  ---  Tipo de registro (0=Entrada / 1=Salida): " + record_info.RecordType.ToString();
+                            log_add_string(info_buff);
                         }
                         break;
                 }
@@ -276,31 +289,38 @@ namespace AppRegistros
 
             if (ret > 0)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(800);
                 ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
                 dbg_info("CChex_Update returned: " + ret);
 
-                while (ret > 0 && Type[0] == (int)AnvizNew.MsgType.CCHEX_RET_LIST_PERSON_INFO_TYPE)
+                if (ret > 0)
                 {
-                    CCHEX_RET_PERSON_INFO_STRU infoEmpleado = (CCHEX_RET_PERSON_INFO_STRU)Marshal.PtrToStructure(pBuff, typeof(CCHEX_RET_PERSON_INFO_STRU));
-
-                    // Si el sistema es Little Endian, no cambiar el orden, pero si es Big Endian, invertir los bytes
-                    if (BitConverter.IsLittleEndian)
+                    while (ret > 0 && Type[0] == (int)AnvizNew.MsgType.CCHEX_RET_LIST_PERSON_INFO_TYPE)
                     {
-                        Array.Reverse(infoEmpleado.EmployeeId);
+                        CCHEX_RET_PERSON_INFO_STRU infoEmpleado = (CCHEX_RET_PERSON_INFO_STRU)Marshal.PtrToStructure(pBuff, typeof(CCHEX_RET_PERSON_INFO_STRU));
+
+                        // Si el sistema es Little Endian, no cambiar el orden, pero si es Big Endian, invertir los bytes
+                        if (BitConverter.IsLittleEndian)
+                        {
+                            Array.Reverse(infoEmpleado.EmployeeId);
+                        }
+                        int idEmpleado = BitConverter.ToInt32(infoEmpleado.EmployeeId, 0);
+                        string nombreEmpleado = byte_to_string(infoEmpleado.EmployeeName).TrimEnd('\0');
+                        string dni = string.Empty;
+                        string areaTrabajo = string.Empty;
+
+                        dbg_info($"Empleado - ID: {idEmpleado}, Nombre: {nombreEmpleado}");
+
+                        InsertarEmpleado(idEmpleado, nombreEmpleado, dni, areaTrabajo);
+
+                        ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
                     }
-                    int idEmpleado = BitConverter.ToInt32(infoEmpleado.EmployeeId, 0);
-                    string nombreEmpleado = byte_to_string(infoEmpleado.EmployeeName).TrimEnd('\0');
-                    string dni = string.Empty;
-                    string areaTrabajo = string.Empty;
-
-                    dbg_info($"Empleado - ID: {idEmpleado}, Nombre: {nombreEmpleado}");
-
-                    InsertarEmpleado(idEmpleado, nombreEmpleado, dni, areaTrabajo);
-
-                    ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
+                    dbg_info("Información de empleados obtenida correctamente -----------------------------------");
                 }
-                dbg_info("Información de empleados obtenida correctamente");
+                else
+                {
+                    dbg_info("Datos devueltos invalidos o espacio del buffer insuficiente. Error al obtener los empleados del dispositivo. Fallo el update");
+                }
             }
             else
             {
@@ -331,12 +351,12 @@ namespace AppRegistros
         private void btnConfigRed_Click(object sender, EventArgs e)
         {
             pBuff = IntPtr.Zero;
-            len = 800; // Marshal.SizeOf(typeof(CCHEX_RET_GETNETCFG_STRU)) + 100;
+            len = 1000; //Marshal.SizeOf(typeof(CCHEX_RET_GETNETCFG_STRU)) + 100;
             pBuff = Marshal.AllocHGlobal(len);
 
             ret = AnvizNew.CChex_GetNetConfig(anviz_handle, dev_idx[0]);
 
-            Thread.Sleep(100);
+            Thread.Sleep(500);
             ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
 
             dbg_info("CChex_Update returned: " + ret);
@@ -396,7 +416,6 @@ namespace AppRegistros
         // REGISTROS
         private void btnBuscarRegistros_Click(object sender, EventArgs e)
         {
-            ObtenerHorasTrabajadasPorDia();
             CargarListViewRegistros();
         }
         private void CargarListViewRegistros()
@@ -418,7 +437,7 @@ namespace AppRegistros
            MAX(r.TipoRegistro) AS UltimoRegistro
     FROM Registros r
     JOIN Empleados e ON r.IdEmpleado = e.IdEmpleado
-    WHERE (r.IdEmpleado = @idEmpleado OR e.NombreEmpleado LIKE @nombre OR e.DNI LIKE @nombre)
+    WHERE (r.IdEmpleado = @idEmpleado OR e.NombreEmpleado LIKE @nombre)
     AND r.Fecha BETWEEN @fechaInicio AND @fechaFin 
     AND r.TipoRegistro IN (0, 1)
     GROUP BY r.IdEmpleado, DATE(r.Fecha)
@@ -474,7 +493,7 @@ namespace AppRegistros
                 len = 100000;
                 pBuff = Marshal.AllocHGlobal(len);
 
-                Thread.Sleep(200);
+                Thread.Sleep(800);
                 ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
                 dbg_info("CChex_Update returned: " + ret);
 
@@ -505,10 +524,11 @@ namespace AppRegistros
                         InsertarRegistro(idEmpleado, tipoRegistro, dateStr);
                         ret = AnvizNew.CChex_Update(anviz_handle, dev_idx, Type, pBuff, len);
                     }
+                    dbg_info("Registros descargados correctamente ---------------------------------");
                 }
                 else
                 {
-                    dbg_info("Datos devueltos invalidos o espacio del buffer insuficiente.");
+                    dbg_info("Datos devueltos invalidos o espacio del buffer insuficiente. Error al descargar los registros. Falló el update");
                 }
                 Marshal.FreeHGlobal(pBuff);
             }
@@ -604,6 +624,35 @@ namespace AppRegistros
         private string byte_to_string(byte[] StringData)
         {
             return Encoding.Default.GetString(StringData).Replace("\0", "");
+        }
+        private void log_add_string(string info_buff)
+        {
+            bool scroll = false;
+            if (this.listBoxLog.Items.Count >= 1000)
+            {
+                this.listBoxLog.Items.Clear();
+            }
+
+            if (this.listBoxLog.TopIndex == this.listBoxLog.Items.Count - (int)(this.listBoxLog.Height / this.listBoxLog.ItemHeight))
+            {
+                scroll = true;
+            }
+            this.listBoxLog.Items.Add(info_buff);
+            if (scroll)
+            {
+                this.listBoxLog.TopIndex = this.listBoxLog.Items.Count - (int)(this.listBoxLog.Height / this.listBoxLog.ItemHeight);
+            }
+
+        }
+        private string Employee_array_to_srring(byte[] EmployeeId)
+        {
+            byte[] temp = new byte[8];
+            int i;
+            for (i = 0; i < 5; i++)
+            {
+                temp[8 - 4 - i] = EmployeeId[i];
+            }
+            return BitConverter.ToInt64(temp, 0).ToString();
         }
     }
 }

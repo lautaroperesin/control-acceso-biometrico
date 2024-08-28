@@ -7,7 +7,6 @@ using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Text;
 using static AnvizDemo.AnvizNew;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AppRegistros
 {
