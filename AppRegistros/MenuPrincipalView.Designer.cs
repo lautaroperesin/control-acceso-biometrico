@@ -74,6 +74,7 @@
             label3 = new Label();
             txtIdEmpleado = new TextBox();
             tabPageRegistros = new TabPage();
+            btnExportarExcel = new Button();
             pictureBox6 = new PictureBox();
             txtHorasTotales = new TextBox();
             label6 = new Label();
@@ -101,9 +102,10 @@
             // btnBuscarRegistros
             // 
             btnBuscarRegistros.Anchor = AnchorStyles.Top;
-            btnBuscarRegistros.Location = new Point(709, 42);
+            btnBuscarRegistros.Font = new Font("Segoe UI", 9F);
+            btnBuscarRegistros.Location = new Point(712, 39);
             btnBuscarRegistros.Name = "btnBuscarRegistros";
-            btnBuscarRegistros.Size = new Size(161, 32);
+            btnBuscarRegistros.Size = new Size(161, 35);
             btnBuscarRegistros.TabIndex = 0;
             btnBuscarRegistros.Text = "Buscar registros";
             btnBuscarRegistros.UseVisualStyleBackColor = true;
@@ -113,7 +115,7 @@
             // 
             btnConectarDispositivo.Anchor = AnchorStyles.None;
             btnConectarDispositivo.Font = new Font("Segoe UI", 12F);
-            btnConectarDispositivo.Location = new Point(459, 282);
+            btnConectarDispositivo.Location = new Point(462, 295);
             btnConectarDispositivo.Name = "btnConectarDispositivo";
             btnConectarDispositivo.Size = new Size(225, 56);
             btnConectarDispositivo.TabIndex = 2;
@@ -125,7 +127,7 @@
             // 
             textBoxIpDispositivo.Anchor = AnchorStyles.None;
             textBoxIpDispositivo.Font = new Font("Segoe UI", 12F);
-            textBoxIpDispositivo.Location = new Point(551, 146);
+            textBoxIpDispositivo.Location = new Point(554, 159);
             textBoxIpDispositivo.Name = "textBoxIpDispositivo";
             textBoxIpDispositivo.Size = new Size(133, 34);
             textBoxIpDispositivo.TabIndex = 3;
@@ -135,7 +137,7 @@
             // 
             textBoxPuertoDispositivo.Anchor = AnchorStyles.None;
             textBoxPuertoDispositivo.Font = new Font("Segoe UI", 12F);
-            textBoxPuertoDispositivo.Location = new Point(587, 207);
+            textBoxPuertoDispositivo.Location = new Point(590, 220);
             textBoxPuertoDispositivo.Name = "textBoxPuertoDispositivo";
             textBoxPuertoDispositivo.Size = new Size(97, 34);
             textBoxPuertoDispositivo.TabIndex = 4;
@@ -146,7 +148,7 @@
             label1.Anchor = AnchorStyles.None;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 12F);
-            label1.Location = new Point(499, 146);
+            label1.Location = new Point(502, 159);
             label1.Name = "label1";
             label1.Size = new Size(32, 28);
             label1.TabIndex = 5;
@@ -157,7 +159,7 @@
             label2.Anchor = AnchorStyles.None;
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label2.Location = new Point(459, 207);
+            label2.Location = new Point(462, 220);
             label2.Name = "label2";
             label2.Size = new Size(74, 28);
             label2.TabIndex = 6;
@@ -166,7 +168,7 @@
             // btnConfigRed
             // 
             btnConfigRed.Anchor = AnchorStyles.None;
-            btnConfigRed.Location = new Point(30, 335);
+            btnConfigRed.Location = new Point(32, 342);
             btnConfigRed.Name = "btnConfigRed";
             btnConfigRed.Size = new Size(194, 44);
             btnConfigRed.TabIndex = 9;
@@ -177,7 +179,7 @@
             // textBoxIp
             // 
             textBoxIp.Anchor = AnchorStyles.None;
-            textBoxIp.Location = new Point(30, 40);
+            textBoxIp.Location = new Point(32, 47);
             textBoxIp.Name = "textBoxIp";
             textBoxIp.ReadOnly = true;
             textBoxIp.Size = new Size(169, 27);
@@ -186,7 +188,7 @@
             // textBoxServIp
             // 
             textBoxServIp.Anchor = AnchorStyles.None;
-            textBoxServIp.Location = new Point(30, 230);
+            textBoxServIp.Location = new Point(32, 237);
             textBoxServIp.Name = "textBoxServIp";
             textBoxServIp.ReadOnly = true;
             textBoxServIp.Size = new Size(169, 27);
@@ -195,7 +197,7 @@
             // textBoxGw
             // 
             textBoxGw.Anchor = AnchorStyles.None;
-            textBoxGw.Location = new Point(30, 167);
+            textBoxGw.Location = new Point(32, 174);
             textBoxGw.Name = "textBoxGw";
             textBoxGw.ReadOnly = true;
             textBoxGw.Size = new Size(169, 27);
@@ -204,7 +206,7 @@
             // textBoxMask
             // 
             textBoxMask.Anchor = AnchorStyles.None;
-            textBoxMask.Location = new Point(30, 105);
+            textBoxMask.Location = new Point(32, 112);
             textBoxMask.Name = "textBoxMask";
             textBoxMask.ReadOnly = true;
             textBoxMask.Size = new Size(169, 27);
@@ -213,7 +215,7 @@
             // textBoxPort
             // 
             textBoxPort.Anchor = AnchorStyles.None;
-            textBoxPort.Location = new Point(30, 292);
+            textBoxPort.Location = new Point(32, 299);
             textBoxPort.Name = "textBoxPort";
             textBoxPort.ReadOnly = true;
             textBoxPort.Size = new Size(169, 27);
@@ -222,7 +224,7 @@
             // btnSincHora
             // 
             btnSincHora.Anchor = AnchorStyles.None;
-            btnSincHora.Location = new Point(30, 452);
+            btnSincHora.Location = new Point(32, 459);
             btnSincHora.Name = "btnSincHora";
             btnSincHora.Size = new Size(194, 42);
             btnSincHora.TabIndex = 22;
@@ -234,7 +236,7 @@
             // 
             txtId.Anchor = AnchorStyles.Top;
             txtId.Font = new Font("Segoe UI", 10F);
-            txtId.Location = new Point(219, 44);
+            txtId.Location = new Point(222, 44);
             txtId.Name = "txtId";
             txtId.Size = new Size(70, 30);
             txtId.TabIndex = 23;
@@ -243,7 +245,7 @@
             // 
             dateTimeFechaInicio.Anchor = AnchorStyles.Top;
             dateTimeFechaInicio.Font = new Font("Segoe UI", 10F);
-            dateTimeFechaInicio.Location = new Point(367, 44);
+            dateTimeFechaInicio.Location = new Point(370, 44);
             dateTimeFechaInicio.Name = "dateTimeFechaInicio";
             dateTimeFechaInicio.Size = new Size(122, 30);
             dateTimeFechaInicio.TabIndex = 24;
@@ -252,7 +254,7 @@
             // 
             dateTimeFechaFinal.Anchor = AnchorStyles.Top;
             dateTimeFechaFinal.Font = new Font("Segoe UI", 10F);
-            dateTimeFechaFinal.Location = new Point(568, 44);
+            dateTimeFechaFinal.Location = new Point(571, 44);
             dateTimeFechaFinal.Name = "dateTimeFechaFinal";
             dateTimeFechaFinal.Size = new Size(124, 30);
             dateTimeFechaFinal.TabIndex = 25;
@@ -262,7 +264,7 @@
             id.Anchor = AnchorStyles.Top;
             id.AutoSize = true;
             id.Font = new Font("Segoe UI", 10F);
-            id.Location = new Point(99, 51);
+            id.Location = new Point(102, 51);
             id.Name = "id";
             id.Size = new Size(111, 23);
             id.TabIndex = 26;
@@ -273,7 +275,7 @@
             label4.Anchor = AnchorStyles.Top;
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 10F);
-            label4.Location = new Point(300, 51);
+            label4.Location = new Point(303, 51);
             label4.Name = "label4";
             label4.Size = new Size(61, 23);
             label4.TabIndex = 27;
@@ -284,7 +286,7 @@
             label5.Anchor = AnchorStyles.Top;
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 10F);
-            label5.Location = new Point(505, 51);
+            label5.Location = new Point(508, 51);
             label5.Name = "label5";
             label5.Size = new Size(57, 23);
             label5.TabIndex = 28;
@@ -292,13 +294,13 @@
             // 
             // listViewEmpleados
             // 
-            listViewEmpleados.Anchor = AnchorStyles.None;
+            listViewEmpleados.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             listViewEmpleados.Columns.AddRange(new ColumnHeader[] { columnHeader5, columnHeader6, columnHeader7, columnHeader8 });
             listViewEmpleados.FullRowSelect = true;
             listViewEmpleados.GridLines = true;
-            listViewEmpleados.Location = new Point(505, 11);
+            listViewEmpleados.Location = new Point(509, 18);
             listViewEmpleados.Name = "listViewEmpleados";
-            listViewEmpleados.Size = new Size(601, 505);
+            listViewEmpleados.Size = new Size(601, 517);
             listViewEmpleados.TabIndex = 29;
             listViewEmpleados.UseCompatibleStateImageBehavior = false;
             listViewEmpleados.View = View.Details;
@@ -330,9 +332,9 @@
             listViewRegistros.Columns.AddRange(new ColumnHeader[] { columnHeader10, columnHeader3, columnHeader4, columnHeader11, columnHeader12, columnHeader1, columnHeader2 });
             listViewRegistros.FullRowSelect = true;
             listViewRegistros.GridLines = true;
-            listViewRegistros.Location = new Point(111, 92);
+            listViewRegistros.Location = new Point(114, 92);
             listViewRegistros.Name = "listViewRegistros";
-            listViewRegistros.Size = new Size(752, 410);
+            listViewRegistros.Size = new Size(752, 448);
             listViewRegistros.TabIndex = 30;
             listViewRegistros.UseCompatibleStateImageBehavior = false;
             listViewRegistros.View = View.Details;
@@ -375,7 +377,7 @@
             // 
             btnBuscarEmpleado.Anchor = AnchorStyles.None;
             btnBuscarEmpleado.Font = new Font("Segoe UI", 10F);
-            btnBuscarEmpleado.Location = new Point(55, 271);
+            btnBuscarEmpleado.Location = new Point(58, 284);
             btnBuscarEmpleado.Name = "btnBuscarEmpleado";
             btnBuscarEmpleado.Size = new Size(125, 33);
             btnBuscarEmpleado.TabIndex = 31;
@@ -387,7 +389,7 @@
             // 
             btnEditar.Anchor = AnchorStyles.None;
             btnEditar.Font = new Font("Segoe UI", 10F);
-            btnEditar.Location = new Point(213, 271);
+            btnEditar.Location = new Point(216, 284);
             btnEditar.Name = "btnEditar";
             btnEditar.Size = new Size(122, 33);
             btnEditar.TabIndex = 32;
@@ -399,7 +401,7 @@
             // 
             btnEliminar.Anchor = AnchorStyles.None;
             btnEliminar.Font = new Font("Segoe UI", 10F);
-            btnEliminar.Location = new Point(363, 271);
+            btnEliminar.Location = new Point(366, 284);
             btnEliminar.Name = "btnEliminar";
             btnEliminar.Size = new Size(118, 33);
             btnEliminar.TabIndex = 34;
@@ -419,7 +421,7 @@
             groupBoxInicio.ImeMode = ImeMode.NoControl;
             groupBoxInicio.Location = new Point(-4, -3);
             groupBoxInicio.Name = "groupBoxInicio";
-            groupBoxInicio.Size = new Size(1131, 559);
+            groupBoxInicio.Size = new Size(1136, 585);
             groupBoxInicio.TabIndex = 35;
             groupBoxInicio.TabStop = false;
             // 
@@ -444,7 +446,7 @@
             tabControlEmpleados.Name = "tabControlEmpleados";
             tabControlEmpleados.Padding = new Point(10, 3);
             tabControlEmpleados.SelectedIndex = 0;
-            tabControlEmpleados.Size = new Size(1131, 559);
+            tabControlEmpleados.Size = new Size(1136, 585);
             tabControlEmpleados.TabIndex = 36;
             // 
             // tabPageEmpleados
@@ -464,7 +466,7 @@
             tabPageEmpleados.Location = new Point(4, 34);
             tabPageEmpleados.Name = "tabPageEmpleados";
             tabPageEmpleados.Padding = new Padding(3);
-            tabPageEmpleados.Size = new Size(1123, 521);
+            tabPageEmpleados.Size = new Size(1128, 547);
             tabPageEmpleados.TabIndex = 0;
             tabPageEmpleados.Text = "Empleados";
             // 
@@ -472,7 +474,7 @@
             // 
             pictureBox5.Anchor = AnchorStyles.None;
             pictureBox5.Image = Properties.Resources.editar;
-            pictureBox5.Location = new Point(213, 320);
+            pictureBox5.Location = new Point(216, 333);
             pictureBox5.Name = "pictureBox5";
             pictureBox5.Size = new Size(122, 36);
             pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
@@ -483,7 +485,7 @@
             // 
             pictureBox4.Anchor = AnchorStyles.None;
             pictureBox4.Image = Properties.Resources.eliminar_usuario;
-            pictureBox4.Location = new Point(363, 320);
+            pictureBox4.Location = new Point(366, 333);
             pictureBox4.Name = "pictureBox4";
             pictureBox4.Size = new Size(118, 36);
             pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
@@ -494,7 +496,7 @@
             // 
             pictureBox3.Anchor = AnchorStyles.None;
             pictureBox3.Image = Properties.Resources.buscar;
-            pictureBox3.Location = new Point(55, 320);
+            pictureBox3.Location = new Point(58, 333);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(125, 36);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
@@ -505,7 +507,7 @@
             // 
             pictureBox2.Anchor = AnchorStyles.None;
             pictureBox2.Image = Properties.Resources.user_interface;
-            pictureBox2.Location = new Point(213, 68);
+            pictureBox2.Location = new Point(216, 81);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(163, 78);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
@@ -517,7 +519,7 @@
             label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 10F);
-            label3.Location = new Point(57, 200);
+            label3.Location = new Point(60, 213);
             label3.Name = "label3";
             label3.Size = new Size(158, 23);
             label3.TabIndex = 36;
@@ -527,13 +529,14 @@
             // 
             txtIdEmpleado.Anchor = AnchorStyles.None;
             txtIdEmpleado.Font = new Font("Segoe UI", 10F);
-            txtIdEmpleado.Location = new Point(230, 193);
+            txtIdEmpleado.Location = new Point(233, 206);
             txtIdEmpleado.Name = "txtIdEmpleado";
             txtIdEmpleado.Size = new Size(125, 30);
             txtIdEmpleado.TabIndex = 35;
             // 
             // tabPageRegistros
             // 
+            tabPageRegistros.Controls.Add(btnExportarExcel);
             tabPageRegistros.Controls.Add(pictureBox6);
             tabPageRegistros.Controls.Add(txtHorasTotales);
             tabPageRegistros.Controls.Add(label6);
@@ -549,16 +552,27 @@
             tabPageRegistros.Location = new Point(4, 34);
             tabPageRegistros.Name = "tabPageRegistros";
             tabPageRegistros.Padding = new Padding(3);
-            tabPageRegistros.Size = new Size(1123, 521);
+            tabPageRegistros.Size = new Size(1128, 547);
             tabPageRegistros.TabIndex = 1;
             tabPageRegistros.Text = "Registros";
             tabPageRegistros.UseVisualStyleBackColor = true;
+            // 
+            // btnExportarExcel
+            // 
+            btnExportarExcel.Anchor = AnchorStyles.None;
+            btnExportarExcel.Location = new Point(923, 357);
+            btnExportarExcel.Name = "btnExportarExcel";
+            btnExportarExcel.Size = new Size(143, 38);
+            btnExportarExcel.TabIndex = 34;
+            btnExportarExcel.Text = "Exportar a Excel";
+            btnExportarExcel.UseVisualStyleBackColor = true;
+            btnExportarExcel.Click += btnExportarExcel_Click;
             // 
             // pictureBox6
             // 
             pictureBox6.Anchor = AnchorStyles.None;
             pictureBox6.Image = Properties.Resources.registro_hora;
-            pictureBox6.Location = new Point(886, 42);
+            pictureBox6.Location = new Point(889, 55);
             pictureBox6.Name = "pictureBox6";
             pictureBox6.Size = new Size(206, 165);
             pictureBox6.SizeMode = PictureBoxSizeMode.Zoom;
@@ -569,7 +583,7 @@
             // 
             txtHorasTotales.Anchor = AnchorStyles.None;
             txtHorasTotales.Font = new Font("Segoe UI", 12F);
-            txtHorasTotales.Location = new Point(953, 272);
+            txtHorasTotales.Location = new Point(956, 285);
             txtHorasTotales.MaxLength = 10;
             txtHorasTotales.Name = "txtHorasTotales";
             txtHorasTotales.ReadOnly = true;
@@ -582,7 +596,7 @@
             label6.Anchor = AnchorStyles.None;
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 12F);
-            label6.Location = new Point(869, 230);
+            label6.Location = new Point(872, 243);
             label6.Name = "label6";
             label6.Size = new Size(223, 28);
             label6.TabIndex = 31;
@@ -607,7 +621,7 @@
             tabPageConfig.Font = new Font("Segoe UI", 9F);
             tabPageConfig.Location = new Point(4, 34);
             tabPageConfig.Name = "tabPageConfig";
-            tabPageConfig.Size = new Size(1123, 521);
+            tabPageConfig.Size = new Size(1126, 535);
             tabPageConfig.TabIndex = 2;
             tabPageConfig.Text = "Configuración";
             tabPageConfig.UseVisualStyleBackColor = true;
@@ -616,7 +630,7 @@
             // 
             pictureBox1.Anchor = AnchorStyles.None;
             pictureBox1.Image = Properties.Resources.reloj;
-            pictureBox1.Location = new Point(73, 410);
+            pictureBox1.Location = new Point(75, 417);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(106, 36);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -627,7 +641,7 @@
             // 
             label11.Anchor = AnchorStyles.None;
             label11.AutoSize = true;
-            label11.Location = new Point(30, 269);
+            label11.Location = new Point(32, 276);
             label11.Name = "label11";
             label11.Size = new Size(55, 20);
             label11.TabIndex = 28;
@@ -637,7 +651,7 @@
             // 
             label10.Anchor = AnchorStyles.None;
             label10.AutoSize = true;
-            label10.Location = new Point(30, 207);
+            label10.Location = new Point(32, 214);
             label10.Name = "label10";
             label10.Size = new Size(69, 20);
             label10.TabIndex = 27;
@@ -647,7 +661,7 @@
             // 
             label9.Anchor = AnchorStyles.None;
             label9.AutoSize = true;
-            label9.Location = new Point(30, 144);
+            label9.Location = new Point(32, 151);
             label9.Name = "label9";
             label9.Size = new Size(122, 20);
             label9.TabIndex = 26;
@@ -657,7 +671,7 @@
             // 
             label8.Anchor = AnchorStyles.None;
             label8.AutoSize = true;
-            label8.Location = new Point(30, 82);
+            label8.Location = new Point(32, 89);
             label8.Name = "label8";
             label8.Size = new Size(137, 20);
             label8.TabIndex = 25;
@@ -667,7 +681,7 @@
             // 
             label7.Anchor = AnchorStyles.None;
             label7.AutoSize = true;
-            label7.Location = new Point(30, 17);
+            label7.Location = new Point(32, 24);
             label7.Name = "label7";
             label7.Size = new Size(91, 20);
             label7.TabIndex = 24;
@@ -675,12 +689,12 @@
             // 
             // listBoxLog
             // 
-            listBoxLog.Anchor = AnchorStyles.None;
+            listBoxLog.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             listBoxLog.BorderStyle = BorderStyle.FixedSingle;
             listBoxLog.Font = new Font("Segoe UI", 9F);
             listBoxLog.FormattingEnabled = true;
             listBoxLog.HorizontalScrollbar = true;
-            listBoxLog.Location = new Point(249, 7);
+            listBoxLog.Location = new Point(252, 7);
             listBoxLog.Name = "listBoxLog";
             listBoxLog.SelectionMode = SelectionMode.None;
             listBoxLog.Size = new Size(867, 502);
@@ -690,7 +704,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1128, 557);
+            ClientSize = new Size(1133, 583);
             Controls.Add(groupBoxInicio);
             Controls.Add(tabControlEmpleados);
             Name = "BusquedaRegistrosView";
@@ -773,5 +787,6 @@
         private PictureBox pictureBox5;
         private PictureBox pictureBox4;
         private PictureBox pictureBox6;
+        private Button btnExportarExcel;
     }
 }

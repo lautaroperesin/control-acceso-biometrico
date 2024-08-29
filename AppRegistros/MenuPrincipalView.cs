@@ -1,5 +1,6 @@
 ﻿using AnvizDemo;
 using AppRegistros.Utils;
+using ClosedXML.Excel;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
@@ -138,8 +139,6 @@ namespace AppRegistros
 
                         await Task.Delay(500);
                         LoguearDispositivo();
-                        //ObtenerInfoEmpleado();
-                        //CargarListViewEmpleados();
                         DownloadAllRecords();
                         groupBoxInicio.Hide();
                     }
@@ -653,6 +652,47 @@ namespace AppRegistros
                 temp[8 - 4 - i] = EmployeeId[i];
             }
             return BitConverter.ToInt64(temp, 0).ToString();
+        }
+
+        private void btnExportarExcel_Click(object sender, EventArgs e)
+        {
+            // Crear un nuevo archivo Excel
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Registros");
+
+                // Añadir encabezados de columna
+                worksheet.Cell(1, 1).Value = "IdEmpleado";
+                worksheet.Cell(1, 2).Value = "NombreEmpleado";
+                worksheet.Cell(1, 3).Value = "AreaTrabajo";
+                worksheet.Cell(1, 4).Value = "Fecha";
+                worksheet.Cell(1, 5).Value = "Entrada";
+                worksheet.Cell(1, 6).Value = "Salida";
+                worksheet.Cell(1, 7).Value = "HorasTrabajadas";
+
+                // Recorrer los elementos del ListView y añadir filas al archivo Excel
+                for (int i = 0; i < listViewRegistros.Items.Count; i++)
+                {
+                    var item = listViewRegistros.Items[i];
+                    worksheet.Cell(i + 2, 1).Value = item.SubItems[0].Text; // IdEmpleado
+                    worksheet.Cell(i + 2, 2).Value = item.SubItems[1].Text; // NombreEmpleado
+                    worksheet.Cell(i + 2, 3).Value = item.SubItems[2].Text; // AreaTrabajo
+                    worksheet.Cell(i + 2, 4).Value = item.SubItems[3].Text; // Fecha
+                    worksheet.Cell(i + 2, 5).Value = item.SubItems[4].Text; // Entrada
+                    worksheet.Cell(i + 2, 6).Value = item.SubItems[5].Text; // Salida
+                    worksheet.Cell(i + 2, 7).Value = item.SubItems[6].Text; // HorasTrabajadas
+                }
+
+                // Guardar el archivo Excel
+                using (var saveFileDialog = new SaveFileDialog() { Filter = "Excel Workbook|*.xlsx", Title = "Guardar como Excel" })
+                {
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        workbook.SaveAs(saveFileDialog.FileName);
+                        MessageBox.Show("Archivo exportado exitosamente.", "Exportar a Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
         }
     }
 }

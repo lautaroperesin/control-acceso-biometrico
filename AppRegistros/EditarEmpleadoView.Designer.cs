@@ -40,6 +40,7 @@
             // 
             // txtNombreEmpleado
             // 
+            txtNombreEmpleado.Anchor = AnchorStyles.None;
             txtNombreEmpleado.Font = new Font("Microsoft Sans Serif", 12F);
             txtNombreEmpleado.Location = new Point(351, 141);
             txtNombreEmpleado.Name = "txtNombreEmpleado";
@@ -48,6 +49,7 @@
             // 
             // txtDocumento
             // 
+            txtDocumento.Anchor = AnchorStyles.None;
             txtDocumento.Font = new Font("Microsoft Sans Serif", 12F);
             txtDocumento.Location = new Point(351, 212);
             txtDocumento.Name = "txtDocumento";
@@ -56,6 +58,7 @@
             // 
             // txtAreaTrabajo
             // 
+            txtAreaTrabajo.Anchor = AnchorStyles.None;
             txtAreaTrabajo.Font = new Font("Microsoft Sans Serif", 12F);
             txtAreaTrabajo.Location = new Point(351, 286);
             txtAreaTrabajo.Name = "txtAreaTrabajo";
@@ -64,6 +67,7 @@
             // 
             // label1
             // 
+            label1.Anchor = AnchorStyles.None;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 12F);
             label1.Location = new Point(243, 141);
@@ -74,6 +78,7 @@
             // 
             // label2
             // 
+            label2.Anchor = AnchorStyles.None;
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F);
             label2.Location = new Point(282, 214);
@@ -84,6 +89,7 @@
             // 
             // label3
             // 
+            label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F);
             label3.Location = new Point(181, 286);
@@ -94,6 +100,7 @@
             // 
             // btnGuardar
             // 
+            btnGuardar.Anchor = AnchorStyles.None;
             btnGuardar.Location = new Point(217, 379);
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new Size(127, 50);
@@ -104,6 +111,7 @@
             // 
             // btnCancelar
             // 
+            btnCancelar.Anchor = AnchorStyles.None;
             btnCancelar.Location = new Point(395, 379);
             btnCancelar.Name = "btnCancelar";
             btnCancelar.Size = new Size(129, 50);
