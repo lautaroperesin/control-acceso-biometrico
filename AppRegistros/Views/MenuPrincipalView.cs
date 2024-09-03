@@ -1,7 +1,6 @@
 ﻿using AnvizDemo;
 using AppRegistros.Utils;
 using ClosedXML.Excel;
-using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Net.NetworkInformation;

@@ -1,10 +1,6 @@
 ﻿using AnvizDemo;
 using AppRegistros.Utils;
 using System.Data.SQLite;
-using System.Diagnostics;
-using System.Drawing;
-using System.Reflection.PortableExecutable;
-using System.Runtime.InteropServices;
 using System.Text;
 using static AnvizDemo.AnvizNew;
 

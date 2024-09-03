@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BusquedaRegistrosView));
             btnBuscarRegistros = new Button();
             btnConectarDispositivo = new Button();
             textBoxIpDispositivo = new TextBox();
@@ -103,9 +104,10 @@
             // 
             btnBuscarRegistros.Anchor = AnchorStyles.Top;
             btnBuscarRegistros.Font = new Font("Segoe UI", 9F);
-            btnBuscarRegistros.Location = new Point(712, 39);
+            btnBuscarRegistros.Location = new Point(623, 29);
+            btnBuscarRegistros.Margin = new Padding(3, 2, 3, 2);
             btnBuscarRegistros.Name = "btnBuscarRegistros";
-            btnBuscarRegistros.Size = new Size(161, 35);
+            btnBuscarRegistros.Size = new Size(141, 26);
             btnBuscarRegistros.TabIndex = 0;
             btnBuscarRegistros.Text = "Buscar registros";
             btnBuscarRegistros.UseVisualStyleBackColor = true;
@@ -115,9 +117,10 @@
             // 
             btnConectarDispositivo.Anchor = AnchorStyles.None;
             btnConectarDispositivo.Font = new Font("Segoe UI", 12F);
-            btnConectarDispositivo.Location = new Point(462, 295);
+            btnConectarDispositivo.Location = new Point(404, 221);
+            btnConectarDispositivo.Margin = new Padding(3, 2, 3, 2);
             btnConectarDispositivo.Name = "btnConectarDispositivo";
-            btnConectarDispositivo.Size = new Size(225, 56);
+            btnConectarDispositivo.Size = new Size(197, 42);
             btnConectarDispositivo.TabIndex = 2;
             btnConectarDispositivo.Text = "Conectar dispositivo";
             btnConectarDispositivo.UseVisualStyleBackColor = true;
@@ -127,9 +130,10 @@
             // 
             textBoxIpDispositivo.Anchor = AnchorStyles.None;
             textBoxIpDispositivo.Font = new Font("Segoe UI", 12F);
-            textBoxIpDispositivo.Location = new Point(554, 159);
+            textBoxIpDispositivo.Location = new Point(485, 119);
+            textBoxIpDispositivo.Margin = new Padding(3, 2, 3, 2);
             textBoxIpDispositivo.Name = "textBoxIpDispositivo";
-            textBoxIpDispositivo.Size = new Size(133, 34);
+            textBoxIpDispositivo.Size = new Size(117, 29);
             textBoxIpDispositivo.TabIndex = 3;
             textBoxIpDispositivo.Text = "192.168.1.218";
             // 
@@ -137,9 +141,10 @@
             // 
             textBoxPuertoDispositivo.Anchor = AnchorStyles.None;
             textBoxPuertoDispositivo.Font = new Font("Segoe UI", 12F);
-            textBoxPuertoDispositivo.Location = new Point(590, 220);
+            textBoxPuertoDispositivo.Location = new Point(516, 165);
+            textBoxPuertoDispositivo.Margin = new Padding(3, 2, 3, 2);
             textBoxPuertoDispositivo.Name = "textBoxPuertoDispositivo";
-            textBoxPuertoDispositivo.Size = new Size(97, 34);
+            textBoxPuertoDispositivo.Size = new Size(85, 29);
             textBoxPuertoDispositivo.TabIndex = 4;
             textBoxPuertoDispositivo.Text = "5010";
             // 
@@ -148,9 +153,9 @@
             label1.Anchor = AnchorStyles.None;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 12F);
-            label1.Location = new Point(502, 159);
+            label1.Location = new Point(439, 119);
             label1.Name = "label1";
-            label1.Size = new Size(32, 28);
+            label1.Size = new Size(26, 21);
             label1.TabIndex = 5;
             label1.Text = "IP:";
             // 
@@ -159,18 +164,19 @@
             label2.Anchor = AnchorStyles.None;
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label2.Location = new Point(462, 220);
+            label2.Location = new Point(404, 165);
             label2.Name = "label2";
-            label2.Size = new Size(74, 28);
+            label2.Size = new Size(59, 21);
             label2.TabIndex = 6;
             label2.Text = "Puerto:";
             // 
             // btnConfigRed
             // 
             btnConfigRed.Anchor = AnchorStyles.None;
-            btnConfigRed.Location = new Point(32, 342);
+            btnConfigRed.Location = new Point(28, 256);
+            btnConfigRed.Margin = new Padding(3, 2, 3, 2);
             btnConfigRed.Name = "btnConfigRed";
-            btnConfigRed.Size = new Size(194, 44);
+            btnConfigRed.Size = new Size(170, 33);
             btnConfigRed.TabIndex = 9;
             btnConfigRed.Text = "Config. de red";
             btnConfigRed.UseVisualStyleBackColor = true;
@@ -179,54 +185,60 @@
             // textBoxIp
             // 
             textBoxIp.Anchor = AnchorStyles.None;
-            textBoxIp.Location = new Point(32, 47);
+            textBoxIp.Location = new Point(28, 35);
+            textBoxIp.Margin = new Padding(3, 2, 3, 2);
             textBoxIp.Name = "textBoxIp";
             textBoxIp.ReadOnly = true;
-            textBoxIp.Size = new Size(169, 27);
+            textBoxIp.Size = new Size(148, 23);
             textBoxIp.TabIndex = 15;
             // 
             // textBoxServIp
             // 
             textBoxServIp.Anchor = AnchorStyles.None;
-            textBoxServIp.Location = new Point(32, 237);
+            textBoxServIp.Location = new Point(28, 178);
+            textBoxServIp.Margin = new Padding(3, 2, 3, 2);
             textBoxServIp.Name = "textBoxServIp";
             textBoxServIp.ReadOnly = true;
-            textBoxServIp.Size = new Size(169, 27);
+            textBoxServIp.Size = new Size(148, 23);
             textBoxServIp.TabIndex = 16;
             // 
             // textBoxGw
             // 
             textBoxGw.Anchor = AnchorStyles.None;
-            textBoxGw.Location = new Point(32, 174);
+            textBoxGw.Location = new Point(28, 130);
+            textBoxGw.Margin = new Padding(3, 2, 3, 2);
             textBoxGw.Name = "textBoxGw";
             textBoxGw.ReadOnly = true;
-            textBoxGw.Size = new Size(169, 27);
+            textBoxGw.Size = new Size(148, 23);
             textBoxGw.TabIndex = 17;
             // 
             // textBoxMask
             // 
             textBoxMask.Anchor = AnchorStyles.None;
-            textBoxMask.Location = new Point(32, 112);
+            textBoxMask.Location = new Point(28, 84);
+            textBoxMask.Margin = new Padding(3, 2, 3, 2);
             textBoxMask.Name = "textBoxMask";
             textBoxMask.ReadOnly = true;
-            textBoxMask.Size = new Size(169, 27);
+            textBoxMask.Size = new Size(148, 23);
             textBoxMask.TabIndex = 18;
             // 
             // textBoxPort
             // 
             textBoxPort.Anchor = AnchorStyles.None;
-            textBoxPort.Location = new Point(32, 299);
+            textBoxPort.Location = new Point(28, 224);
+            textBoxPort.Margin = new Padding(3, 2, 3, 2);
             textBoxPort.Name = "textBoxPort";
             textBoxPort.ReadOnly = true;
-            textBoxPort.Size = new Size(169, 27);
+            textBoxPort.Size = new Size(148, 23);
             textBoxPort.TabIndex = 19;
             // 
             // btnSincHora
             // 
             btnSincHora.Anchor = AnchorStyles.None;
-            btnSincHora.Location = new Point(32, 459);
+            btnSincHora.Location = new Point(28, 344);
+            btnSincHora.Margin = new Padding(3, 2, 3, 2);
             btnSincHora.Name = "btnSincHora";
-            btnSincHora.Size = new Size(194, 42);
+            btnSincHora.Size = new Size(170, 32);
             btnSincHora.TabIndex = 22;
             btnSincHora.Text = "Sincronizar hora";
             btnSincHora.UseVisualStyleBackColor = true;
@@ -236,27 +248,30 @@
             // 
             txtId.Anchor = AnchorStyles.Top;
             txtId.Font = new Font("Segoe UI", 10F);
-            txtId.Location = new Point(222, 44);
+            txtId.Location = new Point(194, 33);
+            txtId.Margin = new Padding(3, 2, 3, 2);
             txtId.Name = "txtId";
-            txtId.Size = new Size(70, 30);
+            txtId.Size = new Size(62, 25);
             txtId.TabIndex = 23;
             // 
             // dateTimeFechaInicio
             // 
             dateTimeFechaInicio.Anchor = AnchorStyles.Top;
             dateTimeFechaInicio.Font = new Font("Segoe UI", 10F);
-            dateTimeFechaInicio.Location = new Point(370, 44);
+            dateTimeFechaInicio.Location = new Point(324, 33);
+            dateTimeFechaInicio.Margin = new Padding(3, 2, 3, 2);
             dateTimeFechaInicio.Name = "dateTimeFechaInicio";
-            dateTimeFechaInicio.Size = new Size(122, 30);
+            dateTimeFechaInicio.Size = new Size(107, 25);
             dateTimeFechaInicio.TabIndex = 24;
             // 
             // dateTimeFechaFinal
             // 
             dateTimeFechaFinal.Anchor = AnchorStyles.Top;
             dateTimeFechaFinal.Font = new Font("Segoe UI", 10F);
-            dateTimeFechaFinal.Location = new Point(571, 44);
+            dateTimeFechaFinal.Location = new Point(500, 33);
+            dateTimeFechaFinal.Margin = new Padding(3, 2, 3, 2);
             dateTimeFechaFinal.Name = "dateTimeFechaFinal";
-            dateTimeFechaFinal.Size = new Size(124, 30);
+            dateTimeFechaFinal.Size = new Size(109, 25);
             dateTimeFechaFinal.TabIndex = 25;
             // 
             // id
@@ -264,9 +279,9 @@
             id.Anchor = AnchorStyles.Top;
             id.AutoSize = true;
             id.Font = new Font("Segoe UI", 10F);
-            id.Location = new Point(102, 51);
+            id.Location = new Point(89, 38);
             id.Name = "id";
-            id.Size = new Size(111, 23);
+            id.Size = new Size(89, 19);
             id.TabIndex = 26;
             id.Text = "Nombre / ID:";
             // 
@@ -275,9 +290,9 @@
             label4.Anchor = AnchorStyles.Top;
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 10F);
-            label4.Location = new Point(303, 51);
+            label4.Location = new Point(265, 38);
             label4.Name = "label4";
-            label4.Size = new Size(61, 23);
+            label4.Size = new Size(50, 19);
             label4.TabIndex = 27;
             label4.Text = "Desde:";
             // 
@@ -286,9 +301,9 @@
             label5.Anchor = AnchorStyles.Top;
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 10F);
-            label5.Location = new Point(508, 51);
+            label5.Location = new Point(444, 38);
             label5.Name = "label5";
-            label5.Size = new Size(57, 23);
+            label5.Size = new Size(47, 19);
             label5.TabIndex = 28;
             label5.Text = "Hasta:";
             // 
@@ -298,9 +313,10 @@
             listViewEmpleados.Columns.AddRange(new ColumnHeader[] { columnHeader5, columnHeader6, columnHeader7, columnHeader8 });
             listViewEmpleados.FullRowSelect = true;
             listViewEmpleados.GridLines = true;
-            listViewEmpleados.Location = new Point(509, 18);
+            listViewEmpleados.Location = new Point(445, 14);
+            listViewEmpleados.Margin = new Padding(3, 2, 3, 2);
             listViewEmpleados.Name = "listViewEmpleados";
-            listViewEmpleados.Size = new Size(601, 517);
+            listViewEmpleados.Size = new Size(526, 389);
             listViewEmpleados.TabIndex = 29;
             listViewEmpleados.UseCompatibleStateImageBehavior = false;
             listViewEmpleados.View = View.Details;
@@ -332,9 +348,10 @@
             listViewRegistros.Columns.AddRange(new ColumnHeader[] { columnHeader10, columnHeader3, columnHeader4, columnHeader11, columnHeader12, columnHeader1, columnHeader2 });
             listViewRegistros.FullRowSelect = true;
             listViewRegistros.GridLines = true;
-            listViewRegistros.Location = new Point(114, 92);
+            listViewRegistros.Location = new Point(100, 69);
+            listViewRegistros.Margin = new Padding(3, 2, 3, 2);
             listViewRegistros.Name = "listViewRegistros";
-            listViewRegistros.Size = new Size(752, 448);
+            listViewRegistros.Size = new Size(658, 336);
             listViewRegistros.TabIndex = 30;
             listViewRegistros.UseCompatibleStateImageBehavior = false;
             listViewRegistros.View = View.Details;
@@ -377,9 +394,10 @@
             // 
             btnBuscarEmpleado.Anchor = AnchorStyles.None;
             btnBuscarEmpleado.Font = new Font("Segoe UI", 10F);
-            btnBuscarEmpleado.Location = new Point(58, 284);
+            btnBuscarEmpleado.Location = new Point(51, 213);
+            btnBuscarEmpleado.Margin = new Padding(3, 2, 3, 2);
             btnBuscarEmpleado.Name = "btnBuscarEmpleado";
-            btnBuscarEmpleado.Size = new Size(125, 33);
+            btnBuscarEmpleado.Size = new Size(109, 25);
             btnBuscarEmpleado.TabIndex = 31;
             btnBuscarEmpleado.Text = "Buscar";
             btnBuscarEmpleado.UseVisualStyleBackColor = true;
@@ -389,9 +407,10 @@
             // 
             btnEditar.Anchor = AnchorStyles.None;
             btnEditar.Font = new Font("Segoe UI", 10F);
-            btnEditar.Location = new Point(216, 284);
+            btnEditar.Location = new Point(189, 213);
+            btnEditar.Margin = new Padding(3, 2, 3, 2);
             btnEditar.Name = "btnEditar";
-            btnEditar.Size = new Size(122, 33);
+            btnEditar.Size = new Size(107, 25);
             btnEditar.TabIndex = 32;
             btnEditar.Text = "Editar";
             btnEditar.UseVisualStyleBackColor = true;
@@ -401,9 +420,10 @@
             // 
             btnEliminar.Anchor = AnchorStyles.None;
             btnEliminar.Font = new Font("Segoe UI", 10F);
-            btnEliminar.Location = new Point(366, 284);
+            btnEliminar.Location = new Point(320, 213);
+            btnEliminar.Margin = new Padding(3, 2, 3, 2);
             btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(118, 33);
+            btnEliminar.Size = new Size(103, 25);
             btnEliminar.TabIndex = 34;
             btnEliminar.Text = "Eliminar";
             btnEliminar.UseVisualStyleBackColor = true;
@@ -419,17 +439,20 @@
             groupBoxInicio.Controls.Add(textBoxPuertoDispositivo);
             groupBoxInicio.Controls.Add(label2);
             groupBoxInicio.ImeMode = ImeMode.NoControl;
-            groupBoxInicio.Location = new Point(-4, -3);
+            groupBoxInicio.Location = new Point(-4, -2);
+            groupBoxInicio.Margin = new Padding(3, 2, 3, 2);
             groupBoxInicio.Name = "groupBoxInicio";
-            groupBoxInicio.Size = new Size(1136, 585);
+            groupBoxInicio.Padding = new Padding(3, 2, 3, 2);
+            groupBoxInicio.Size = new Size(994, 439);
             groupBoxInicio.TabIndex = 35;
             groupBoxInicio.TabStop = false;
             // 
             // progressBarCargando
             // 
-            progressBarCargando.Location = new Point(459, 429);
+            progressBarCargando.Location = new Point(402, 322);
+            progressBarCargando.Margin = new Padding(3, 2, 3, 2);
             progressBarCargando.Name = "progressBarCargando";
-            progressBarCargando.Size = new Size(225, 29);
+            progressBarCargando.Size = new Size(197, 22);
             progressBarCargando.TabIndex = 7;
             progressBarCargando.Visible = false;
             // 
@@ -441,12 +464,13 @@
             tabControlEmpleados.Controls.Add(tabPageRegistros);
             tabControlEmpleados.Controls.Add(tabPageConfig);
             tabControlEmpleados.Font = new Font("Segoe UI", 11F);
-            tabControlEmpleados.Location = new Point(-4, -3);
+            tabControlEmpleados.Location = new Point(-4, -2);
+            tabControlEmpleados.Margin = new Padding(3, 2, 3, 2);
             tabControlEmpleados.Multiline = true;
             tabControlEmpleados.Name = "tabControlEmpleados";
             tabControlEmpleados.Padding = new Point(10, 3);
             tabControlEmpleados.SelectedIndex = 0;
-            tabControlEmpleados.Size = new Size(1136, 585);
+            tabControlEmpleados.Size = new Size(994, 439);
             tabControlEmpleados.TabIndex = 36;
             // 
             // tabPageEmpleados
@@ -463,10 +487,11 @@
             tabPageEmpleados.Controls.Add(btnBuscarEmpleado);
             tabPageEmpleados.Controls.Add(btnEditar);
             tabPageEmpleados.Font = new Font("Segoe UI", 9F);
-            tabPageEmpleados.Location = new Point(4, 34);
+            tabPageEmpleados.Location = new Point(4, 29);
+            tabPageEmpleados.Margin = new Padding(3, 2, 3, 2);
             tabPageEmpleados.Name = "tabPageEmpleados";
-            tabPageEmpleados.Padding = new Padding(3);
-            tabPageEmpleados.Size = new Size(1128, 547);
+            tabPageEmpleados.Padding = new Padding(3, 2, 3, 2);
+            tabPageEmpleados.Size = new Size(986, 406);
             tabPageEmpleados.TabIndex = 0;
             tabPageEmpleados.Text = "Empleados";
             // 
@@ -474,9 +499,10 @@
             // 
             pictureBox5.Anchor = AnchorStyles.None;
             pictureBox5.Image = Properties.Resources.editar;
-            pictureBox5.Location = new Point(216, 333);
+            pictureBox5.Location = new Point(189, 250);
+            pictureBox5.Margin = new Padding(3, 2, 3, 2);
             pictureBox5.Name = "pictureBox5";
-            pictureBox5.Size = new Size(122, 36);
+            pictureBox5.Size = new Size(107, 27);
             pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox5.TabIndex = 40;
             pictureBox5.TabStop = false;
@@ -485,9 +511,10 @@
             // 
             pictureBox4.Anchor = AnchorStyles.None;
             pictureBox4.Image = Properties.Resources.eliminar_usuario;
-            pictureBox4.Location = new Point(366, 333);
+            pictureBox4.Location = new Point(320, 250);
+            pictureBox4.Margin = new Padding(3, 2, 3, 2);
             pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(118, 36);
+            pictureBox4.Size = new Size(103, 27);
             pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox4.TabIndex = 39;
             pictureBox4.TabStop = false;
@@ -496,9 +523,10 @@
             // 
             pictureBox3.Anchor = AnchorStyles.None;
             pictureBox3.Image = Properties.Resources.buscar;
-            pictureBox3.Location = new Point(58, 333);
+            pictureBox3.Location = new Point(51, 250);
+            pictureBox3.Margin = new Padding(3, 2, 3, 2);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(125, 36);
+            pictureBox3.Size = new Size(109, 27);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox3.TabIndex = 38;
             pictureBox3.TabStop = false;
@@ -507,9 +535,10 @@
             // 
             pictureBox2.Anchor = AnchorStyles.None;
             pictureBox2.Image = Properties.Resources.user_interface;
-            pictureBox2.Location = new Point(216, 81);
+            pictureBox2.Location = new Point(189, 61);
+            pictureBox2.Margin = new Padding(3, 2, 3, 2);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(163, 78);
+            pictureBox2.Size = new Size(143, 58);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.TabIndex = 37;
             pictureBox2.TabStop = false;
@@ -519,9 +548,9 @@
             label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 10F);
-            label3.Location = new Point(60, 213);
+            label3.Location = new Point(52, 160);
             label3.Name = "label3";
-            label3.Size = new Size(158, 23);
+            label3.Size = new Size(126, 19);
             label3.TabIndex = 36;
             label3.Text = "Nombre / DNI / ID:";
             // 
@@ -529,9 +558,10 @@
             // 
             txtIdEmpleado.Anchor = AnchorStyles.None;
             txtIdEmpleado.Font = new Font("Segoe UI", 10F);
-            txtIdEmpleado.Location = new Point(233, 206);
+            txtIdEmpleado.Location = new Point(204, 154);
+            txtIdEmpleado.Margin = new Padding(3, 2, 3, 2);
             txtIdEmpleado.Name = "txtIdEmpleado";
-            txtIdEmpleado.Size = new Size(125, 30);
+            txtIdEmpleado.Size = new Size(110, 25);
             txtIdEmpleado.TabIndex = 35;
             // 
             // tabPageRegistros
@@ -549,10 +579,11 @@
             tabPageRegistros.Controls.Add(listViewRegistros);
             tabPageRegistros.Controls.Add(label5);
             tabPageRegistros.Font = new Font("Segoe UI", 9F);
-            tabPageRegistros.Location = new Point(4, 34);
+            tabPageRegistros.Location = new Point(4, 29);
+            tabPageRegistros.Margin = new Padding(3, 2, 3, 2);
             tabPageRegistros.Name = "tabPageRegistros";
-            tabPageRegistros.Padding = new Padding(3);
-            tabPageRegistros.Size = new Size(1128, 547);
+            tabPageRegistros.Padding = new Padding(3, 2, 3, 2);
+            tabPageRegistros.Size = new Size(986, 406);
             tabPageRegistros.TabIndex = 1;
             tabPageRegistros.Text = "Registros";
             tabPageRegistros.UseVisualStyleBackColor = true;
@@ -560,9 +591,10 @@
             // btnExportarExcel
             // 
             btnExportarExcel.Anchor = AnchorStyles.None;
-            btnExportarExcel.Location = new Point(923, 357);
+            btnExportarExcel.Location = new Point(808, 268);
+            btnExportarExcel.Margin = new Padding(3, 2, 3, 2);
             btnExportarExcel.Name = "btnExportarExcel";
-            btnExportarExcel.Size = new Size(143, 38);
+            btnExportarExcel.Size = new Size(125, 28);
             btnExportarExcel.TabIndex = 34;
             btnExportarExcel.Text = "Exportar a Excel";
             btnExportarExcel.UseVisualStyleBackColor = true;
@@ -572,9 +604,10 @@
             // 
             pictureBox6.Anchor = AnchorStyles.None;
             pictureBox6.Image = Properties.Resources.registro_hora;
-            pictureBox6.Location = new Point(889, 55);
+            pictureBox6.Location = new Point(778, 41);
+            pictureBox6.Margin = new Padding(3, 2, 3, 2);
             pictureBox6.Name = "pictureBox6";
-            pictureBox6.Size = new Size(206, 165);
+            pictureBox6.Size = new Size(180, 124);
             pictureBox6.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox6.TabIndex = 33;
             pictureBox6.TabStop = false;
@@ -583,11 +616,12 @@
             // 
             txtHorasTotales.Anchor = AnchorStyles.None;
             txtHorasTotales.Font = new Font("Segoe UI", 12F);
-            txtHorasTotales.Location = new Point(956, 285);
+            txtHorasTotales.Location = new Point(836, 214);
+            txtHorasTotales.Margin = new Padding(3, 2, 3, 2);
             txtHorasTotales.MaxLength = 10;
             txtHorasTotales.Name = "txtHorasTotales";
             txtHorasTotales.ReadOnly = true;
-            txtHorasTotales.Size = new Size(72, 34);
+            txtHorasTotales.Size = new Size(64, 29);
             txtHorasTotales.TabIndex = 32;
             txtHorasTotales.TextAlign = HorizontalAlignment.Center;
             // 
@@ -596,9 +630,9 @@
             label6.Anchor = AnchorStyles.None;
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 12F);
-            label6.Location = new Point(872, 243);
+            label6.Location = new Point(763, 182);
             label6.Name = "label6";
-            label6.Size = new Size(223, 28);
+            label6.Size = new Size(177, 21);
             label6.TabIndex = 31;
             label6.Text = "Horas totales trabajadas";
             // 
@@ -619,9 +653,10 @@
             tabPageConfig.Controls.Add(textBoxPort);
             tabPageConfig.Controls.Add(btnSincHora);
             tabPageConfig.Font = new Font("Segoe UI", 9F);
-            tabPageConfig.Location = new Point(4, 34);
+            tabPageConfig.Location = new Point(4, 29);
+            tabPageConfig.Margin = new Padding(3, 2, 3, 2);
             tabPageConfig.Name = "tabPageConfig";
-            tabPageConfig.Size = new Size(1126, 535);
+            tabPageConfig.Size = new Size(986, 406);
             tabPageConfig.TabIndex = 2;
             tabPageConfig.Text = "Configuración";
             tabPageConfig.UseVisualStyleBackColor = true;
@@ -630,9 +665,10 @@
             // 
             pictureBox1.Anchor = AnchorStyles.None;
             pictureBox1.Image = Properties.Resources.reloj;
-            pictureBox1.Location = new Point(75, 417);
+            pictureBox1.Location = new Point(66, 313);
+            pictureBox1.Margin = new Padding(3, 2, 3, 2);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(106, 36);
+            pictureBox1.Size = new Size(93, 27);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 29;
             pictureBox1.TabStop = false;
@@ -641,9 +677,9 @@
             // 
             label11.Anchor = AnchorStyles.None;
             label11.AutoSize = true;
-            label11.Location = new Point(32, 276);
+            label11.Location = new Point(28, 207);
             label11.Name = "label11";
-            label11.Size = new Size(55, 20);
+            label11.Size = new Size(45, 15);
             label11.TabIndex = 28;
             label11.Text = "Puerto:";
             // 
@@ -651,9 +687,9 @@
             // 
             label10.Anchor = AnchorStyles.None;
             label10.AutoSize = true;
-            label10.Location = new Point(32, 214);
+            label10.Location = new Point(28, 160);
             label10.Name = "label10";
-            label10.Size = new Size(69, 20);
+            label10.Size = new Size(55, 15);
             label10.TabIndex = 27;
             label10.Text = "Server IP:";
             // 
@@ -661,9 +697,9 @@
             // 
             label9.Anchor = AnchorStyles.None;
             label9.AutoSize = true;
-            label9.Location = new Point(32, 151);
+            label9.Location = new Point(28, 113);
             label9.Name = "label9";
-            label9.Size = new Size(122, 20);
+            label9.Size = new Size(97, 15);
             label9.TabIndex = 26;
             label9.Text = "Puerta de enlace:";
             // 
@@ -671,9 +707,9 @@
             // 
             label8.Anchor = AnchorStyles.None;
             label8.AutoSize = true;
-            label8.Location = new Point(32, 89);
+            label8.Location = new Point(28, 67);
             label8.Name = "label8";
-            label8.Size = new Size(137, 20);
+            label8.Size = new Size(109, 15);
             label8.TabIndex = 25;
             label8.Text = "Máscara de subred:";
             // 
@@ -681,9 +717,9 @@
             // 
             label7.Anchor = AnchorStyles.None;
             label7.AutoSize = true;
-            label7.Location = new Point(32, 24);
+            label7.Location = new Point(28, 18);
             label7.Name = "label7";
-            label7.Size = new Size(91, 20);
+            label7.Size = new Size(73, 15);
             label7.TabIndex = 24;
             label7.Text = "Dirección IP:";
             // 
@@ -694,22 +730,26 @@
             listBoxLog.Font = new Font("Segoe UI", 9F);
             listBoxLog.FormattingEnabled = true;
             listBoxLog.HorizontalScrollbar = true;
-            listBoxLog.Location = new Point(252, 7);
+            listBoxLog.ItemHeight = 15;
+            listBoxLog.Location = new Point(220, 5);
+            listBoxLog.Margin = new Padding(3, 2, 3, 2);
             listBoxLog.Name = "listBoxLog";
             listBoxLog.SelectionMode = SelectionMode.None;
-            listBoxLog.Size = new Size(867, 502);
+            listBoxLog.Size = new Size(759, 377);
             listBoxLog.TabIndex = 23;
             // 
             // BusquedaRegistrosView
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1133, 583);
+            ClientSize = new Size(991, 437);
             Controls.Add(groupBoxInicio);
             Controls.Add(tabControlEmpleados);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(3, 2, 3, 2);
             Name = "BusquedaRegistrosView";
-            StartPosition = FormStartPosition.CenterParent;
-            Text = "Busqueda de registros";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Control Biometrico";
             groupBoxInicio.ResumeLayout(false);
             groupBoxInicio.PerformLayout();
             tabControlEmpleados.ResumeLayout(false);

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditarEmpleadoView));
             txtNombreEmpleado = new TextBox();
             txtDocumento = new TextBox();
             txtAreaTrabajo = new TextBox();
@@ -42,27 +43,30 @@
             // 
             txtNombreEmpleado.Anchor = AnchorStyles.None;
             txtNombreEmpleado.Font = new Font("Microsoft Sans Serif", 12F);
-            txtNombreEmpleado.Location = new Point(351, 141);
+            txtNombreEmpleado.Location = new Point(307, 106);
+            txtNombreEmpleado.Margin = new Padding(3, 2, 3, 2);
             txtNombreEmpleado.Name = "txtNombreEmpleado";
-            txtNombreEmpleado.Size = new Size(148, 30);
+            txtNombreEmpleado.Size = new Size(130, 26);
             txtNombreEmpleado.TabIndex = 0;
             // 
             // txtDocumento
             // 
             txtDocumento.Anchor = AnchorStyles.None;
             txtDocumento.Font = new Font("Microsoft Sans Serif", 12F);
-            txtDocumento.Location = new Point(351, 212);
+            txtDocumento.Location = new Point(307, 159);
+            txtDocumento.Margin = new Padding(3, 2, 3, 2);
             txtDocumento.Name = "txtDocumento";
-            txtDocumento.Size = new Size(148, 30);
+            txtDocumento.Size = new Size(130, 26);
             txtDocumento.TabIndex = 1;
             // 
             // txtAreaTrabajo
             // 
             txtAreaTrabajo.Anchor = AnchorStyles.None;
             txtAreaTrabajo.Font = new Font("Microsoft Sans Serif", 12F);
-            txtAreaTrabajo.Location = new Point(351, 286);
+            txtAreaTrabajo.Location = new Point(307, 214);
+            txtAreaTrabajo.Margin = new Padding(3, 2, 3, 2);
             txtAreaTrabajo.Name = "txtAreaTrabajo";
-            txtAreaTrabajo.Size = new Size(148, 30);
+            txtAreaTrabajo.Size = new Size(130, 26);
             txtAreaTrabajo.TabIndex = 2;
             // 
             // label1
@@ -70,9 +74,9 @@
             label1.Anchor = AnchorStyles.None;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 12F);
-            label1.Location = new Point(243, 141);
+            label1.Location = new Point(213, 106);
             label1.Name = "label1";
-            label1.Size = new Size(89, 28);
+            label1.Size = new Size(71, 21);
             label1.TabIndex = 3;
             label1.Text = "Nombre:";
             // 
@@ -81,9 +85,9 @@
             label2.Anchor = AnchorStyles.None;
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F);
-            label2.Location = new Point(282, 214);
+            label2.Location = new Point(247, 160);
             label2.Name = "label2";
-            label2.Size = new Size(50, 28);
+            label2.Size = new Size(40, 21);
             label2.TabIndex = 4;
             label2.Text = "DNI:";
             // 
@@ -92,18 +96,19 @@
             label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F);
-            label3.Location = new Point(181, 286);
+            label3.Location = new Point(158, 214);
             label3.Name = "label3";
-            label3.Size = new Size(151, 28);
+            label3.Size = new Size(119, 21);
             label3.TabIndex = 5;
             label3.Text = "Área de trabajo:";
             // 
             // btnGuardar
             // 
             btnGuardar.Anchor = AnchorStyles.None;
-            btnGuardar.Location = new Point(217, 379);
+            btnGuardar.Location = new Point(190, 284);
+            btnGuardar.Margin = new Padding(3, 2, 3, 2);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(127, 50);
+            btnGuardar.Size = new Size(111, 38);
             btnGuardar.TabIndex = 6;
             btnGuardar.Text = "Guardar";
             btnGuardar.UseVisualStyleBackColor = true;
@@ -112,9 +117,10 @@
             // btnCancelar
             // 
             btnCancelar.Anchor = AnchorStyles.None;
-            btnCancelar.Location = new Point(395, 379);
+            btnCancelar.Location = new Point(346, 284);
+            btnCancelar.Margin = new Padding(3, 2, 3, 2);
             btnCancelar.Name = "btnCancelar";
-            btnCancelar.Size = new Size(129, 50);
+            btnCancelar.Size = new Size(113, 38);
             btnCancelar.TabIndex = 7;
             btnCancelar.Text = "Cancelar";
             btnCancelar.UseVisualStyleBackColor = true;
@@ -122,10 +128,10 @@
             // 
             // EditarEmpleadoView
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoValidate = AutoValidate.EnablePreventFocusChange;
-            ClientSize = new Size(687, 488);
+            ClientSize = new Size(601, 366);
             Controls.Add(btnCancelar);
             Controls.Add(btnGuardar);
             Controls.Add(label3);
@@ -134,6 +140,8 @@
             Controls.Add(txtAreaTrabajo);
             Controls.Add(txtDocumento);
             Controls.Add(txtNombreEmpleado);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(3, 2, 3, 2);
             Name = "EditarEmpleadoView";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Editar empleado";
